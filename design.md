@@ -39,14 +39,10 @@ JSON形式
 ## member.txt
 
 ~~~
-""
+"571993334697164801" : 
    {
- "id" : "" 
- "lap_no" : 5
- "max_hp" : 8500
- "hp" : 4500
- "status" : 0
- "message_id" : ""
+ "id" : "571993334697164801" ,
+ "status" : [{"status" : 0},{"status" : 1,"second" : 65},{"status" : 2}]
 },
 
 省略
