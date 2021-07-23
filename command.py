@@ -1,12 +1,14 @@
 
 # インストールした discord.py を読み込む
+import os
 import discord
 from datetime import datetime
 import mojimoji
 import common
 
-TOKEN = 'xxxxx'
-COMMAND_CH_ID = 12345
+BOT_TOKEN=os.getenv('BOT_TOKEN')
+
+COMMAND_CH_ID = 861892585617096714/867738701395263498
 
 ok_hand = "👌"
 
@@ -283,4 +285,4 @@ def check_cmd_cancel(argument_list):
 #loop.start()
 
 # Botの起動とDiscordサーバーへの接続
-client.run(TOKEN)
+client.run(BOT_TOKEN)
