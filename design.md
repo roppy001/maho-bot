@@ -8,6 +8,7 @@ lock.loc : ロックファイル(実行時に一時的に生成)
 data/  
   boss.txt : ボスの周、HP、名前などを保存  
   member.txt : クラメン情報  
+  server.txt
   reservation.txt : 予約、実績情報  
 ~~~
 
@@ -52,3 +53,18 @@ JSON形式
 }
 ~~~
 
+ * id : discordでユーザを特定するID  
+ * attack : 3凸分の状態を配列で保持  
+ * status : 0:未凸 1:持ち越し 2:凸完了  
+ * second : 持ち越し秒数を保持  
+
+## reservation.txt
+
+## server.txt
+~~~
+{
+  "command_channel" : ""
+  "reservation_channel" : ""
+  "detail_status_channel" : ""
+}
+~~~
