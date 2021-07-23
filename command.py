@@ -1,6 +1,7 @@
 
 # インストールした discord.py を読み込む
 import os
+import json
 import discord
 from datetime import datetime
 import mojimoji
@@ -8,7 +9,13 @@ import common
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
-COMMAND_CH_ID = 861892585617096714/867738701395263498
+GUILD_ID_KEY = 'guild_id'
+CATEGORY_CHANNEL_KEY = 'category_channel'
+COMMAND_CHANNEL_KEY = 'command_channel'
+RESERVATION_CHANNEL_KEY = 'reservation_channel'
+REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
+
+SERVER_TEXT_PATH = 'data/server.txt'
 
 ok_hand = "👌"
 
@@ -55,11 +62,16 @@ client = discord.Client()
 async def on_ready():
     # 起動したらターミナルにログイン通知が表示される
     print('ログインしました')
-
+    return
 
 # 発言時に実行されるイベントハンドラを定義
 @client.event
 async def on_message(message):
+    # await message.guild.leave()
+
+    # return
+
+    server_setting = load_server_settings()
 
     # .で始まる場合はコマンドなので処理を行う。
     if message.content.startswith('.'):
@@ -276,6 +288,46 @@ def check_cmd_cancel(argument_list):
         result = 0
         return result
     return
+
+
+
+
+@client.event
+async def on_guild_join(guild):
+    await create_bot_channels(guild) 
+    return
+
+async def create_bot_channels(guild):
+    category_channel    : discord.CategoryChannel = await guild.create_category_channel('マホBOT')
+    command_channel     : discord.TextChannel     = await guild.create_text_channel('コマンド入力',category = category_channel )
+    reservation_channel : discord.TextChannel     = await guild.create_text_channel('予約状況表示',category = category_channel )
+    rest_detail_channel : discord.TextChannel     = await guild.create_text_channel('残凸状況表示',category = category_channel )
+
+    server_setting = {
+        GUILD_ID_KEY : guild.id,
+        CATEGORY_CHANNEL_KEY : category_channel.id,
+        COMMAND_CHANNEL_KEY : command_channel.id,
+        RESERVATION_CHANNEL_KEY : reservation_channel.id,
+        REST_DETAIL_CHANNEL_KEY : rest_detail_channel.id
+    }
+
+    fp = open(SERVER_TEXT_PATH, 'w')
+
+    json.dump(server_setting, fp)
+
+    fp.close()
+
+    return
+
+def load_server_settings():
+    fp = open(SERVER_TEXT_PATH, 'r')
+
+    server_setting =json.load(fp)
+
+    fp.close()
+
+    return server_setting
+
 
 # 60秒に一回ループ
 #@tasks.loop(seconds=60)
