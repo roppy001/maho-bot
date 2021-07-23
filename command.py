@@ -44,16 +44,16 @@ modifyboss_cmd_list = ['.modifyboss']
 cancelboss_cmd_list = ['.cancelboss']
 
 # エラー文言
-error_re_arg = '正しい引数を入力してください。\n.reserve 周 ボス番号 何凸目か コメント\n(例: .reserve 12 3 1 物理1200)'
-error_fin_arg = '正しい引数を入力してください。\n.fin ボス番号 何凸目か 実績ダメージ(万単位)\n(例: .fin 5 1 1800)'
-error_la_arg = '正しい引数を入力してください。\n.la ボス番号 何凸目か 持ち越し秒数\n(例: .la 3 2 29)'
-error_boss_no = 'ボス番号は1~5を入力してください'
-error_laps = '周の指定が正しくありません'
-error_assault = '「何凸目か」は1~3を入力してください'
-error_damage = 'ダメージは数値を入力してください'
-error_over = '持ち越し秒数は21~90の範囲で入力してください'
-error_cmd_none = '正しいコマンドを入力してください'
-error_multi_mention = '複数のメンションが付けられています。'
+error_re_arg = '正しい引数を入力しとぉくれやす。\n.reserve 周 ボス番号 何凸目か コメント\n(例: .reserve 12 3 1 物理1200)'
+error_fin_arg = '正しい引数を入力しとぉくれやす。\n.fin ボス番号 何凸目か 実績ダメージ(万単位)\n(例: .fin 5 1 1800)'
+error_la_arg = '正しい引数を入力しとぉくれやす。\n.la ボス番号 何凸目か 持ち越し秒数\n(例: .la 3 2 29)'
+error_boss_no = 'ボボス番号は1~5を入力しとぉくれやす'
+error_laps = '周の指定正しゅうあらしまへん'
+error_assault = '「何凸目か」は1~3を入力しとぉくれやす'
+error_damage = 'ダダメージは数値を入力しとぉくれやす'
+error_over = '持ち越し秒数は21~90の範囲で入力しとぉくれやす'
+error_cmd_none = '正しいコマンドを入力しとぉくれやす'
+error_multi_mention = '複数のメンション付けられてます'
 
 client = discord.Client()
 
