@@ -74,13 +74,16 @@ async def on_message(message):
 
     server_setting = load_server_settings()
 
-    # .で始まる場合はコマンドなので処理を行う。
-    if message.content.startswith('.'):
-        # コマンドを認識できる形に変換 & 分割して格納する
-        argument_list = convert_cmd(message.content)
-    else:
-    # コマンド以外の場合は処理しない
+    # .で始まらない場合はコマンドではないので無視する
+    if (not message.content.startswith('.')):
         return
+
+    # コマンド入力チャンネルではない場合は無視する
+    if ( message.channel.id != server_setting.get(COMMAND_CHANNEL_KEY) ):
+        return
+
+    # コマンドを認識できる形に変換 & 分割して格納する
+    argument_list = convert_cmd(message.content)
 
     # 引数無しの場合は処理しない
     #if len(argument_list) == 1:
