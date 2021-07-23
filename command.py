@@ -68,8 +68,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
     # await message.guild.leave()
-
     # return
+
+    await recreate_channels_if_not_exist(message.guild)
 
     server_setting = load_server_settings()
 
@@ -313,11 +314,18 @@ async def create_bot_channels(guild):
 
     fp = open(SERVER_TEXT_PATH, 'w')
 
-    json.dump(server_setting, fp)
+    json.dump(server_setting, fp, indent=4)
 
     fp.close()
 
     return
+
+async def recreate_channels_if_not_exist(guild):
+    if(not os.path.exists(SERVER_TEXT_PATH)) :
+        await create_bot_channels(guild)
+
+    return
+
 
 def load_server_settings():
     fp = open(SERVER_TEXT_PATH, 'r')
