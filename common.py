@@ -1,4 +1,8 @@
 
+
+class CommandError(Exception):
+    pass
+
 async def reply_author(message, str):
     reply = f'{message.author.mention} {str}'
     await message.channel.send(reply)

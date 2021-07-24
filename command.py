@@ -1,12 +1,19 @@
-
-# インストールした discord.py を読み込む
+# 組み込み
 import os
 import json
 import re
-import discord
 from datetime import datetime
+
+# 追加インストール
+import discord
 import mojimoji
+
+# mahobot関連
 import common
+import reserve
+import fin
+import la
+import cancel
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
@@ -36,6 +43,8 @@ cancel_cmd_list = ['.cancel', '.取消']
 
 # ステータス変更コマンド
 mod_cmd_list = ['.modifystatus', '.ms', '.状態変更']
+
+COMMAND_LIST = [(['.reserve', '.re', '.予約'], reserve.reserve)]
 
 
 ## 管理用コマンド
@@ -83,15 +92,14 @@ async def on_message(message):
     if message.channel.id != server_setting.get(COMMAND_CHANNEL_KEY) :
         return
 
+    # メンションの全IDを取得
     mention_re = re.compile('<@!\d+>')
     mention_ids = [int(s[3: len(s)-1]) for s in mention_re.findall(message.content)]
-    await common.reply_author(message, mention_ids)
 
+    # メンションを文字列から削除したのち、空白でコマンドを分割
     argument_list = re.split('\s+',mention_re.sub('',message.content).replace('　',' ').strip() )
 
-    await common.reply_author(message, f'{argument_list}')
-
-
+    # IDが0個の場合はメッセージ送信者のID、1個の場合はそのIDをターゲットIDとする
     if len(mention_ids)==0 :
         target_id = message.author.id
     elif len(mention_ids)==1 :
@@ -101,10 +109,21 @@ async def on_message(message):
         return
 
     # コマンド部分は英字大文字を小文字に置き換える
-
-
-    ## コマンドの振り分け
     argument_list[0] = str.lower(argument_list[0])
+
+    try:
+        for c in COMMAND_LIST :
+            if argument_list[0] in c[0] :
+                c[1](target_id, argument_list)
+                await message.add_reaction(ok_hand)
+                return
+        
+    except common.CommandError as ce :
+        await common.reply_author(message, ce.args[0])
+        return
+
+    await common.reply_author(message, error_cmd_none)
+    return
 
     # 予約コマンド
     if argument_list[0] in reserve_cmd_list:
