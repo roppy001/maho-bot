@@ -6,7 +6,6 @@ from datetime import datetime
 
 # 追加インストール
 import discord
-import mojimoji
 
 # mahobot関連
 import messages
