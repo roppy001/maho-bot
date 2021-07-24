@@ -8,8 +8,8 @@ lock.loc : ロックファイル(実行時に一時的に生成)
 data/  
   boss.txt : ボスの周、HP、名前などを保存  
   member.txt : クラメン情報  
+  daily.txt : クラメンの凸状況、予約、実績情報
   server.txt
-  reservation.txt : 予約、実績情報  
 ~~~
 
 ## boss.txt
@@ -40,17 +40,13 @@ JSON形式
 ## member.txt
 
 ~~~
-{
- "571993334697164801" : 
-  {
-   "id" : "571993334697164801",
-   "attack" : [{"status" : 0},
-               {"status" : 1, "second" : 65},
-               {"status" : 2}]
+[{
+   "id" : "123456789012345678",
   },
+]
 
 省略
-}
+]
 ~~~
 
  * id : discordでユーザを特定するID  
@@ -58,7 +54,36 @@ JSON形式
  * status : 0:未凸 1:持ち越し 2:凸完了  
  * second : 持ち越し秒数を保持  
 
-## reservation.txt
+## daily.txt
+~~~
+{
+ "day" : "20210724"
+ "member" :
+ [{
+   "id" : "123456789012345678",
+   "attack" : [{"status" : 0},
+               {"status" : 1, "carry_over" : 65},
+               {"status" : 2}]
+   "reservation" :
+    [[{
+       "seq" : 0
+       "branch" : 0
+       "status" : 0
+       "lap_no" : 1
+       "boss_id" : 0
+       "damage" : 0
+       "registered_date" : 0
+      },
+      {
+      }],
+      [省略],
+      [省略]]
+  },
+  省略
+ ]
+~~~
+
+ * day : 5時切り替えの日を記録 5時の切り替えが必要かの判定に用いる
 
 ## server.txt
 ~~~
