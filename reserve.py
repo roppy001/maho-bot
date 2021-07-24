@@ -17,8 +17,21 @@ def reserve(command_args, mention_ids):
         damage = common.convert_damage(command_args[4])
 
 
+        if len(command_args) == 6:
+            comment = command_args[5]
+        else :
+            comment = ''
+
+        reserve_inner(target_id, lap_no, boss_id, attack_index, damage, comment)
+
+
     except common.CommandError as ce: 
         raise common.CommandError(ce.args[0] + '\n' + messages.cmd_re_arg)
 
     return
+
+def reserve_inner(target_id, lap_no, boss_id, attack_index, damage, comment):
+    return
+
+
 

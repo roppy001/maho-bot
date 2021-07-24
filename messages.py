@@ -9,6 +9,6 @@ error_cmd_none = '正しいコマンドを入力しとぉくれやす'
 error_multi_mention = '複数のメンション付けられてます'
 
 # 用例
-cmd_re_arg = '.reserve 周 ボス番号 何凸目か コメント\n(例: .reserve 12 3 1 物理1200)'
+cmd_re_arg = '.re 周 ボス番号 何凸目か 予定ダメージ(万単位) コメント\n(例: .reserve 12 3 1 1200 事故らなければワンパン)'
 cmd_fin_arg = '.fin ボス番号 何凸目か 実績ダメージ(万単位)\n(例: .fin 5 1 1800)'
 cmd_la_arg = '.la ボス番号 何凸目か 持ち越し秒数\n(例: .la 3 2 29)'

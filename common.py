@@ -41,15 +41,18 @@ def convert_attack_no(attack_no):
         r = int(attack_no)
         if r<1 or r>3:
             raise CommandError(messages.error_attack_no)
-        return r
+        return r-1
     except ValueError:
         raise CommandError(messages.error_attack_no)
 
 def convert_damage(damage):
-    if damage.isdigit():
-        return True
-    else:
-        return False
+    try:
+        r = int(damage)
+        if r<0 or r>=100000:
+            raise CommandError(messages.error_damage)
+        return r
+    except ValueError:
+        raise CommandError(messages.error_damage)
 
 def convert_over(over):
     if over.isdigit():
