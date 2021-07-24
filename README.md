@@ -17,6 +17,27 @@
 .cl 周 ボス番号 何凸目か
 ~~~
 
+# 導入方法(仮)
+※不要な手順もあるかもしれないが、自分は下記でうまく行ったのでひとまず掲載
+
+1. python 3.8 以降の最新版をインストール
+2. 以下のコマンドを打つ
+~~~
+py -3 -m pip install -U discord
+py -3 -m pip install -U mojimoji
+
+python3 -m venv env
+
+env\Scripts\activate.bat
+pip install -U discord
+pip install -U mojimoji
+~~~
+
+
+
+動作環境
+python 3.8.10
+
 # このBOTでできるようになること
 ## 実現優先度高め
  * クランメンバの凸状況が把握できるようになる
