@@ -9,6 +9,7 @@ import discord
 import mojimoji
 
 # mahobot関連
+import messages
 import common
 import reserve
 import fin
@@ -53,18 +54,6 @@ COMMAND_LIST = [(['.reserve', '.re', '.予約'], reserve.reserve)]
 modifyboss_cmd_list = ['.modifyboss']
 cancelboss_cmd_list = ['.cancelboss']
 
-# エラー文言
-error_re_arg = '正しい引数を入力しとぉくれやす。\n.reserve 周 ボス番号 何凸目か コメント\n(例: .reserve 12 3 1 物理1200)'
-error_fin_arg = '正しい引数を入力しとぉくれやす。\n.fin ボス番号 何凸目か 実績ダメージ(万単位)\n(例: .fin 5 1 1800)'
-error_la_arg = '正しい引数を入力しとぉくれやす。\n.la ボス番号 何凸目か 持ち越し秒数\n(例: .la 3 2 29)'
-error_boss_no = 'ボボス番号は1~5を入力しとぉくれやす'
-error_laps = '周の指定正しゅうあらしまへん'
-error_assault = '「何凸目か」は1~3を入力しとぉくれやす'
-error_damage = 'ダダメージは数値を入力しとぉくれやす'
-error_over = '持ち越し秒数は21~90の範囲で入力しとぉくれやす'
-error_cmd_none = '正しいコマンドを入力しとぉくれやす'
-error_multi_mention = '複数のメンション付けられてます'
-
 client = discord.Client()
 
 # 起動時に動作する処理
@@ -96,25 +85,28 @@ async def on_message(message):
     mention_re = re.compile('<@!\d+>')
     mention_ids = [int(s[3: len(s)-1]) for s in mention_re.findall(message.content)]
 
-    # メンションを文字列から削除したのち、空白でコマンドを分割
-    argument_list = re.split('\s+',mention_re.sub('',message.content).replace('　',' ').strip() )
-
-    # IDが0個の場合はメッセージ送信者のID、1個の場合はそのIDをターゲットIDとする
-    if len(mention_ids)==0 :
-        target_id = message.author.id
-    elif len(mention_ids)==1 :
-        target_id = mention_ids[0]
+    mention_match = mention_re.search(message.content)
+    if mention_match:
+        command_str = message.content[:mention_match.start(0)]
     else :
-        await common.reply_author(message, error_multi_mention)
-        return
+        command_str = message.content
+
+    print(command_str)
+
+    # メンションを文字列から削除したのち、空白でコマンドを分割
+    command_args = re.split('\s+', command_str.replace('　',' ').strip() )
 
     # コマンド部分は英字大文字を小文字に置き換える
-    argument_list[0] = str.lower(argument_list[0])
+    command_args[0] = str.lower(command_args[0])
+
+    # IDが0個の場合はメッセージ送信者のIDを追加する
+    if len(mention_ids)==0 :
+        mention_ids.append(message.author.id)
 
     try:
         for c in COMMAND_LIST :
-            if argument_list[0] in c[0] :
-                c[1](target_id, argument_list)
+            if command_args[0] in c[0] :
+                c[1](command_args, mention_ids)
                 await message.add_reaction(ok_hand)
                 return
         
@@ -122,18 +114,18 @@ async def on_message(message):
         await common.reply_author(message, ce.args[0])
         return
 
-    await common.reply_author(message, error_cmd_none)
+    await common.reply_author(message, messages.error_cmd_none)
     return
 
     # 予約コマンド
-    if argument_list[0] in reserve_cmd_list:
-        check_result = check_reserve_cmd(argument_list)
+    if command_args[0] in reserve_cmd_list:
+        check_result = check_reserve_cmd(command_args)
         if check_result == 0:
             # コマンドチェックOKならリアクションを付ける
             await message.add_reaction(ok_hand)
             # TODO:予約コマンドの処理を入れる
             # デバッグ用コード
-            reply = f'{message.author.mention} 引数リスト：{argument_list}　ターゲット:{target_id}'
+            reply = f'{message.author.mention} 引数リスト：{command_args}　ターゲット:{target_id}'
             await message.channel.send(reply)
             # ここまでデバッグ用
             return
@@ -155,13 +147,13 @@ async def on_message(message):
             await message.channel.send(reply)
             return
     # 凸完了コマンド
-    elif argument_list[0] in fin_cmd_list:
-        check_result = check_cmd_fin(argument_list)
+    elif command_args[0] in fin_cmd_list:
+        check_result = check_cmd_fin(command_args)
         if check_result == 0:
             await message.add_reaction(ok_hand)
             # TODO:凸完了コマンドの処理を入れる
             # デバッグ用コード
-            reply = f'{message.author.mention} 引数リスト：{argument_list}　ターゲット:{target_id}'
+            reply = f'{message.author.mention} 引数リスト：{command_args}　ターゲット:{target_id}'
             await message.channel.send(reply)
             # ここまでデバッグ用
             return
@@ -183,13 +175,13 @@ async def on_message(message):
             return
         return
     # 討伐登録コマンド
-    elif argument_list[0] in la_cmd_list:
-        check_result = check_cmd_la(argument_list)
+    elif command_args[0] in la_cmd_list:
+        check_result = check_cmd_la(command_args)
         if check_result == 0:
             await message.add_reaction(ok_hand)
             # TODO:討伐登録コマンドの処理を入れる
             # デバッグ用コード
-            reply = f'{message.author.mention} 引数リスト：{argument_list}　ターゲット:{target_id}'
+            reply = f'{message.author.mention} 引数リスト：{command_args}　ターゲット:{target_id}'
             await message.channel.send(reply)
             # ここまでデバッグ用
             return
@@ -210,14 +202,14 @@ async def on_message(message):
             await message.channel.send(reply)
             return
         return
-    elif argument_list[0] in cancel_cmd_list:
+    elif command_args[0] in cancel_cmd_list:
         return
-    elif argument_list[0] in mod_cmd_list:
+    elif command_args[0] in mod_cmd_list:
         return
-    elif argument_list[0] in modifyboss_cmd_list:
+    elif command_args[0] in modifyboss_cmd_list:
         # 管理者用コマンドは権限のチェックを入れる
         return
-    elif argument_list[0] in cancelboss_cmd_list:
+    elif command_args[0] in cancelboss_cmd_list:
         # 管理者用コマンドは権限のチェックを入れる
         return
     else:
@@ -226,70 +218,49 @@ async def on_message(message):
         await message.channel.send(reply)
         return
 
-# 返信する非同期関数を定義
-async def reply(message, words):
-    reply = f'{message.author.mention}{words}'
-    await message.channel.send(reply)
-
-def convert_cmd(message):
-    # 全角スペースを半角スペースに変換して半角スペース区切りで配列に入れる
-    argument_list = message.replace("　"," ").replace("   "," ").replace("  "," ").split(" ")
-    # 文末にスペースが入ってる場合には取り除く
-    if len(argument_list[-1]) == 0:
-        argument_list.pop(-1)
-    # 大文字から小文字に変換
-    argument_list = list(map(str.lower, argument_list))
-    # 全角から半角に変換
-    argument_list = list(map(mojimoji.zen_to_han, argument_list))
-
-    return argument_list
-
-def common_check_cmd(argument_list):
-    return
-
 
 # .reserve 周 ボス番号 何凸目か コメント
 # result : 0 : チェックOK
-def check_reserve_cmd(argument_list):
+def check_reserve_cmd(command_args):
     # 引数の数をチェック
-    if len(argument_list) < 4 or 5 < len(argument_list):
+    if len(command_args) < 4 or 5 < len(command_args):
         return 1
     # 周のチェック
-    if not common.check_laps(argument_list[1]):
+    if not common.check_laps(command_args[1]):
         return 2
     # ボス番号のチェック
-    if not common.check_boss_no(argument_list[2]):
+    if not common.check_boss_no(command_args[2]):
         return 3
     # 何凸目かのチェック
-    if not common.check_assault(argument_list[3]):
+    if not common.check_assault(command_args[3]):
         return 4
     return 0
 
-def check_cmd_fin(argument_list):
-    if len(argument_list) < 4:
+def check_cmd_fin(command_args):
+    if len(command_args) < 4:
         return 1
-    if not common.check_boss_no(argument_list[1]):
+    if not common.check_boss_no(command_args[1]):
         return 2
-    if not common.check_assault(argument_list[2]):
+    if not common.check_assault(command_args[2]):
         return 3
-    if not common.check_damage(argument_list[3]):
+    if not common.check_damage(command_args[3]):
         return 4
     return 0
 
-def check_cmd_la(argument_list):
-    if len(argument_list) < 4:
+def check_cmd_la(command_args):
+    if len(command_args) < 4:
         return 1
-    if not common.check_boss_no(argument_list[1]):
+    if not common.check_boss_no(command_args[1]):
         return 2
-    if not common.check_assault(argument_list[2]):
+    if not common.check_assault(command_args[2]):
         return 3
-    if not common.check_over(argument_list[3]):
+    if not common.check_over(command_args[3]):
         return 4
     return 0
 
-def check_cmd_cancel(argument_list):
+def check_cmd_cancel(command_args):
     result = 1
-    if len(argument_list) < 4:
+    if len(command_args) < 4:
         result = 0
         return result
     return
