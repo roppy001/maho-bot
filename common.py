@@ -54,11 +54,11 @@ def convert_damage(damage):
     except ValueError:
         raise CommandError(messages.error_damage)
 
-def convert_over(over):
-    if over.isdigit():
-        if 21 <= int(over) <= 90:
-            return True
-        else:
-            return False
-    else:
-        return False
+def convert_carry_over(carry_over):
+    try:
+        r = int(carry_over)
+        if r<21 or r>90:
+            raise CommandError(messages.error_carry_over)
+        return r
+    except ValueError:
+        raise CommandError(messages.error_carry_over)

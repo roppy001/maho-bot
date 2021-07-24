@@ -27,31 +27,17 @@ SERVER_TEXT_PATH = 'data/server.txt'
 
 ok_hand = "👌"
 
-## 一般コマンド
-
-# 予約コマンド
-reserve_cmd_list = ['.reserve', '.re', '.予約']
-
-# 凸完了コマンド
-fin_cmd_list = ['.finish', '.fin', '.完了']
-
-# 討伐登録コマンド
-la_cmd_list = ['.lastattack', '.la', '.討伐']
-
-# キャンセルコマンド
-cancel_cmd_list = ['.cancel', '.取消']
-
-# ステータス変更コマンド
-mod_cmd_list = ['.modifystatus', '.ms', '.状態変更']
-
-COMMAND_LIST = [(['.reserve', '.re', '.予約'], reserve.reserve)]
-
-
-## 管理用コマンド
+## コマンド
+COMMAND_LIST = [
+    (['.reserve', '.re', '.予約'], reserve.reserve),
+    (['.finish', '.fin', '.完了'], fin.fin),
+    (['.lastattack', '.la', '.討伐'], la.la),
+    (['.cancel', '.取消'], cancel.cancel)
+    ]
 
 # ボス周変更コマンド
-modifyboss_cmd_list = ['.modifyboss']
-cancelboss_cmd_list = ['.cancelboss']
+# modifyboss_cmd_list = ['.modifyboss']
+# cancelboss_cmd_list = ['.cancelboss']
 
 client = discord.Client()
 
@@ -115,157 +101,6 @@ async def on_message(message):
 
     await common.reply_author(message, messages.error_cmd_none)
     return
-
-    # 予約コマンド
-    if command_args[0] in reserve_cmd_list:
-        check_result = check_reserve_cmd(command_args)
-        if check_result == 0:
-            # コマンドチェックOKならリアクションを付ける
-            await message.add_reaction(ok_hand)
-            # TODO:予約コマンドの処理を入れる
-            # デバッグ用コード
-            reply = f'{message.author.mention} 引数リスト：{command_args}　ターゲット:{target_id}'
-            await message.channel.send(reply)
-            # ここまでデバッグ用
-            return
-        elif check_result == 1:
-            # コマンドチェックNGなら使い方を表示する
-            reply = f'{message.author.mention} {error_re_arg}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 2:
-            reply = f'{message.author.mention} {error_laps}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 3:
-            reply = f'{message.author.mention} {error_boss_no}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 4:
-            reply = f'{message.author.mention} {error_assault}'
-            await message.channel.send(reply)
-            return
-    # 凸完了コマンド
-    elif command_args[0] in fin_cmd_list:
-        check_result = check_cmd_fin(command_args)
-        if check_result == 0:
-            await message.add_reaction(ok_hand)
-            # TODO:凸完了コマンドの処理を入れる
-            # デバッグ用コード
-            reply = f'{message.author.mention} 引数リスト：{command_args}　ターゲット:{target_id}'
-            await message.channel.send(reply)
-            # ここまでデバッグ用
-            return
-        elif check_result == 1:
-            reply = f'{message.author.mention} {error_fin_arg}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 2:
-            reply = f'{message.author.mention} {error_boss_no}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 3:
-            reply = f'{message.author.mention} {error_assault}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 4:
-            reply = f'{message.author.mention} {error_damage}'
-            await message.channel.send(reply)
-            return
-        return
-    # 討伐登録コマンド
-    elif command_args[0] in la_cmd_list:
-        check_result = check_cmd_la(command_args)
-        if check_result == 0:
-            await message.add_reaction(ok_hand)
-            # TODO:討伐登録コマンドの処理を入れる
-            # デバッグ用コード
-            reply = f'{message.author.mention} 引数リスト：{command_args}　ターゲット:{target_id}'
-            await message.channel.send(reply)
-            # ここまでデバッグ用
-            return
-        elif check_result == 1:
-            reply = f'{message.author.mention} {error_la_arg}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 2:
-            reply = f'{message.author.mention} {error_boss_no}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 3:
-            reply = f'{message.author.mention} {error_assault}'
-            await message.channel.send(reply)
-            return
-        elif check_result == 4:
-            reply = f'{message.author.mention} {error_over}'
-            await message.channel.send(reply)
-            return
-        return
-    elif command_args[0] in cancel_cmd_list:
-        return
-    elif command_args[0] in mod_cmd_list:
-        return
-    elif command_args[0] in modifyboss_cmd_list:
-        # 管理者用コマンドは権限のチェックを入れる
-        return
-    elif command_args[0] in cancelboss_cmd_list:
-        # 管理者用コマンドは権限のチェックを入れる
-        return
-    else:
-        #コマンドリストにないのでエラーを表示する
-        reply = f'{message.author.mention} {error_cmd_none}'
-        await message.channel.send(reply)
-        return
-
-
-# .reserve 周 ボス番号 何凸目か コメント
-# result : 0 : チェックOK
-def check_reserve_cmd(command_args):
-    # 引数の数をチェック
-    if len(command_args) < 4 or 5 < len(command_args):
-        return 1
-    # 周のチェック
-    if not common.check_laps(command_args[1]):
-        return 2
-    # ボス番号のチェック
-    if not common.check_boss_no(command_args[2]):
-        return 3
-    # 何凸目かのチェック
-    if not common.check_assault(command_args[3]):
-        return 4
-    return 0
-
-def check_cmd_fin(command_args):
-    if len(command_args) < 4:
-        return 1
-    if not common.check_boss_no(command_args[1]):
-        return 2
-    if not common.check_assault(command_args[2]):
-        return 3
-    if not common.check_damage(command_args[3]):
-        return 4
-    return 0
-
-def check_cmd_la(command_args):
-    if len(command_args) < 4:
-        return 1
-    if not common.check_boss_no(command_args[1]):
-        return 2
-    if not common.check_assault(command_args[2]):
-        return 3
-    if not common.check_over(command_args[3]):
-        return 4
-    return 0
-
-def check_cmd_cancel(command_args):
-    result = 1
-    if len(command_args) < 4:
-        result = 0
-        return result
-    return
-
-
-
 
 @client.event
 async def on_guild_join(guild):
