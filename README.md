@@ -24,13 +24,11 @@
 2. 以下のコマンドを打つ
 ~~~
 py -3 -m pip install -U discord
-py -3 -m pip install -U mojimoji
 
 python3 -m venv env
 
 env\Scripts\activate.bat
 pip install -U discord
-pip install -U mojimoji
 ~~~
 3. run.batを実行
 
