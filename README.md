@@ -32,11 +32,12 @@ env\Scripts\activate.bat
 pip install -U discord
 pip install -U mojimoji
 ~~~
-
+3. run.batを実行
 
 
 動作環境
 python 3.8.10
+windows 10
 
 # このBOTでできるようになること
 ## 実現優先度高め
