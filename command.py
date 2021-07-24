@@ -2,6 +2,7 @@
 # インストールした discord.py を読み込む
 import os
 import json
+import re
 import discord
 from datetime import datetime
 import mojimoji
@@ -75,42 +76,35 @@ async def on_message(message):
     server_setting = load_server_settings()
 
     # .で始まらない場合はコマンドではないので無視する
-    if (not message.content.startswith('.')):
+    if not message.content.startswith('.') :
         return
 
     # コマンド入力チャンネルではない場合は無視する
-    if ( message.channel.id != server_setting.get(COMMAND_CHANNEL_KEY) ):
+    if message.channel.id != server_setting.get(COMMAND_CHANNEL_KEY) :
         return
 
-    # コマンドを認識できる形に変換 & 分割して格納する
-    argument_list = convert_cmd(message.content)
+    mention_re = re.compile('<@!\d+>')
+    mention_ids = [int(s[3: len(s)-1]) for s in mention_re.findall(message.content)]
+    await common.reply_author(message, mention_ids)
 
-    # 引数無しの場合は処理しない
-    #if len(argument_list) == 1:
-    #    return
+    argument_list = re.split('\s+',mention_re.sub('',message.content).replace('　',' ').strip() )
 
-    # 代行入力のチェック
-    instead = check_instead_cmd(argument_list)
-    print(instead)
+    await common.reply_author(message, f'{argument_list}')
 
-    # 0 : 代行入力 1 : 複数メンションエラー 2:代行無し
-    if instead == 0:
-        # TODO:管理者用コマンドは権限のチェックを入れる
-        target_id = argument_list[-1].replace('<@!', '').replace('>', '')
-        print(target_id)
-        # 代行入力するメンバーのIDを取得したらargument_listからメンション部分を削除する
-        argument_list.pop(-1)
-    elif instead == 1:
-        reply = f'{message.author.mention} {error_multi_mention}'
-        await message.channel.send(reply)
-        return
-    else :
-        # 代行入力無しなら特に何もしない
+
+    if len(mention_ids)==0 :
         target_id = message.author.id
+    elif len(mention_ids)==1 :
+        target_id = mention_ids[0]
+    else :
+        await common.reply_author(message, error_multi_mention)
+        return
 
-    print(argument_list)
+    # コマンド部分は英字大文字を小文字に置き換える
+
 
     ## コマンドの振り分け
+    argument_list[0] = str.lower(argument_list[0])
 
     # 予約コマンド
     if argument_list[0] in reserve_cmd_list:
@@ -126,7 +120,6 @@ async def on_message(message):
             return
         elif check_result == 1:
             # コマンドチェックNGなら使い方を表示する
-            reply()
             reply = f'{message.author.mention} {error_re_arg}'
             await message.channel.send(reply)
             return
@@ -235,17 +228,6 @@ def convert_cmd(message):
 def common_check_cmd(argument_list):
     return
 
-# 代行入力のチェック
-def check_instead_cmd(argument_list):
-    if argument_list[-1].startswith('<@!'):
-        if len(argument_list[-1].split("<@!"))>2:
-            return 1
-        if argument_list[-2].startswith('<@!'):
-            return 1
-        else:
-            return 0
-    else:
-        return 2
 
 # .reserve 周 ボス番号 何凸目か コメント
 # result : 0 : チェックOK

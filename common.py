@@ -1,4 +1,9 @@
 
+async def reply_author(message, str):
+    reply = f'{message.author.mention} {str}'
+    await message.channel.send(reply)
+    return
+
 def check_boss_no(boss_no):
     boss_no_list = ['1','2','3','4','5']
     if boss_no.isdigit():
