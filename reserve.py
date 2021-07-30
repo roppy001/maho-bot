@@ -3,26 +3,29 @@ import common
 
 def reserve(command_args, mention_ids):
     try : 
-        if not (len(command_args) in [5,6]) :
+        if not (len(command_args) in [3,4]) :
             raise common.CommandError(messages.error_args)
 
+        # 引数のチェックと変換
         target_id = common.get_target_id(mention_ids)
 
-        lap_no = common.convert_lap_no(command_args[1])
+        lb = common.convert_boss_no_with_lap_no(command_args[1])
 
-        boss_id = common.convert_boss_no(command_args[2])
+        boss_id = lb[0]
 
-        attack_index = common.convert_attack_no(command_args[3])
+        lap_no = lb[1]
 
-        damage = common.convert_damage(command_args[4])
+        da = common.convert_damage_with_attack_no(command_args[2])
 
+        damage = da[0]
 
-        if len(command_args) == 6:
-            comment = command_args[5]
-        else :
-            comment = ''
+        attack_index = da[1]
 
-        reserve_inner(target_id, lap_no, boss_id, attack_index, damage, comment)
+        comment = ''
+
+        if len(command_args) == 4:
+            comment = command_args[3]
+
 
 
     except common.CommandError as ce: 
@@ -30,8 +33,6 @@ def reserve(command_args, mention_ids):
 
     return
 
-def reserve_inner(target_id, lap_no, boss_id, attack_index, damage, comment):
-    return
 
 
 

@@ -32,7 +32,7 @@ COMMAND_LIST = [
     (['.reserve', '.re', '.予約'], reserve.reserve),
     (['.finish', '.fin', '.完了'], fin.fin),
     (['.lastattack', '.la', '.討伐'], la.la),
-    (['.cancel', '.取消'], cancel.cancel)
+    (['.cancel', '.cl', '.取消'], cancel.cancel)
     ]
 
 # ボス周変更コマンド
@@ -108,10 +108,10 @@ async def on_guild_join(guild):
     return
 
 async def create_bot_channels(guild):
-    category_channel    : discord.CategoryChannel = await guild.create_category_channel('マホBOT')
-    command_channel     : discord.TextChannel     = await guild.create_text_channel('コマンド入力',category = category_channel )
-    reservation_channel : discord.TextChannel     = await guild.create_text_channel('予約状況表示',category = category_channel )
-    rest_detail_channel : discord.TextChannel     = await guild.create_text_channel('残凸状況表示',category = category_channel )
+    category_channel    = await guild.create_category_channel('マホBOT')
+    command_channel     = await guild.create_text_channel('コマンド入力',category = category_channel )
+    reservation_channel = await guild.create_text_channel('予約状況表示',category = category_channel )
+    rest_detail_channel = await guild.create_text_channel('残凸状況表示',category = category_channel )
 
     server_setting = {
         GUILD_ID_KEY : guild.id,

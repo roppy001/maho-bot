@@ -8,6 +8,10 @@ error_carry_over = '持ち越し秒数は21~90の範囲で入力しとぉくれ�
 error_cmd_none = '正しいコマンドを入力しとぉくれやす'
 error_multi_mention = '複数のメンション付けられてます'
 
+error_boss_no_with_lap_no = 'ボス番号は ボス番号(1～5) もしくは ボス番号+ もしくは ボス番号@周(1～180) で指定しとぉくれやす'
+error_damage_with_attack_no = 'ダメージは ダメージ もしくは ダメージm もしくは ダメージm1～3 で指定しとぉくれやす'
+error_carry_over_with_attack_no = '持ち越しは 持ち越し秒数 もしくは m もしくは m1～3 で指定しとぉくれやす'
+
 # 用例
 cmd_re_arg = '.re 周 ボス番号 何凸目か 予定ダメージ(万単位) コメント\n(例: .reserve 12 3 1 1200 事故らなければワンパン)'
 cmd_fin_arg = '.fin ボス番号 何凸目か 実績ダメージ(万単位)\n(例: .fin 5 1 1800)'
