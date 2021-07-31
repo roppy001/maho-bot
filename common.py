@@ -11,15 +11,23 @@ LAP_NEXT = -2
 ATTACK_MAIN = -1
 ATTACK_CARRY_OVER = -2
 
-DATA_SERVER_KEY = "server"
-DATA_MEMBER_KEY = "member"
-DATA_BOSS_KEY = "boss"
-DATA_DAILY_KEY = "daily"
+DATA_CONFIG_KEY = 'config'
+DATA_SERVER_KEY = 'server'
+DATA_MEMBER_KEY = 'member'
+DATA_BOSS_KEY = 'boss'
+DATA_DAILY_KEY = 'daily'
 
+DATA_CONFIG_PATH = 'config/config.txt'
 DATA_SERVER_PATH = 'data/server.txt'
 DATA_MEMBER_PATH = 'data/member.txt'
 DATA_BOSS_PATH = 'data/boss.txt'
 DATA_DAILY_PATH = 'data/daily.txt'
+
+CONFIG_PHASE_KEY = 'phase'
+CONFIG_BOSS_KEY = 'boss'
+
+BOSS_NAME_KEY = 'name'
+BOSS_MAX_HP_KEY = 'map_hp'
 
 SERVER_GUILD_ID_KEY = 'guild_id'
 SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
@@ -191,3 +199,13 @@ def save_members(members):
     fp.close()
 
     return
+
+# メンバ設定を読み込む
+def load_config():
+    fp = open(DATA_CONFIG_PATH, 'r')
+
+    config =json.load(fp)
+
+    fp.close()
+
+    return config

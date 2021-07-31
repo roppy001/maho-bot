@@ -52,6 +52,8 @@ async def on_message(message):
 
     await recreate_channels_if_not_exist(message.guild)
 
+    data[common.DATA_CONFIG_KEY] = common.load_config()
+    
     data[common.DATA_SERVER_KEY] = common.load_server_settings()
 
     # .で始まらない場合はコマンドではないので無視する
