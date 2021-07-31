@@ -1,7 +1,7 @@
 import messages
 import common
 
-def reserve(command_args, mention_ids):
+def reserve(data, command_args, mention_ids):
     try : 
         if not (len(command_args) in [3,4]) :
             raise common.CommandError(messages.error_args)

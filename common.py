@@ -111,7 +111,7 @@ def convert_carry_over_with_attack_no(str):
         else:
             return (convert_carry_over(str), ATTACK_MAIN)
     except CommandError:
-        raise CommandError(messages.error_damage_with_attack_no)
+        raise CommandError(messages.error_carry_over_with_attack_no)
 
 def convert_cancel_attack_no(str):
     try:
@@ -123,5 +123,5 @@ def convert_cancel_attack_no(str):
         else:
             return (convert_attack_no(str), ATTACK_CARRY_OVER)
     except CommandError:
-        raise CommandError(messages.error_damage_with_attack_no)
+        raise CommandError(messages.error_cancel_attack_no)
 

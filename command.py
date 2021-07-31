@@ -25,7 +25,13 @@ REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
 
 SERVER_TEXT_PATH = 'data/server.txt'
 
+DATA_SERVER_KEY = "server"
+DATA_MEMBER_KEY = "member"
+DATA_BOSS_KEY = "boss"
+DATA_DAILY_KEY = "daily"
+
 ok_hand = "👌"
+data = dict()
 
 ## コマンド
 COMMAND_LIST = [
@@ -56,14 +62,14 @@ async def on_message(message):
 
     await recreate_channels_if_not_exist(message.guild)
 
-    server_setting = load_server_settings()
+    data[DATA_SERVER_KEY] = load_server_settings()
 
     # .で始まらない場合はコマンドではないので無視する
     if not message.content.startswith('.') :
         return
 
     # コマンド入力チャンネルではない場合は無視する
-    if message.channel.id != server_setting.get(COMMAND_CHANNEL_KEY) :
+    if message.channel.id != data[DATA_SERVER_KEY][COMMAND_CHANNEL_KEY] :
         return
 
     # メンションの全IDを取得
@@ -91,7 +97,7 @@ async def on_message(message):
     try:
         for c in COMMAND_LIST :
             if command_args[0] in c[0] :
-                c[1](command_args, mention_ids)
+                c[1](data, command_args, mention_ids)
                 await message.add_reaction(ok_hand)
                 return
         
