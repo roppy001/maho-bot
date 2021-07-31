@@ -1,4 +1,6 @@
 from os import stat_result
+import json
+
 import messages
 
 class CommandError(Exception):
@@ -8,6 +10,22 @@ LAP_CURRENT = -1
 LAP_NEXT = -2
 ATTACK_MAIN = -1
 ATTACK_CARRY_OVER = -2
+
+DATA_SERVER_KEY = "server"
+DATA_MEMBER_KEY = "member"
+DATA_BOSS_KEY = "boss"
+DATA_DAILY_KEY = "daily"
+
+DATA_SERVER_PATH = 'data/server.txt'
+DATA_MEMBER_PATH = 'data/member.txt'
+DATA_BOSS_PATH = 'data/boss.txt'
+DATA_DAILY_PATH = 'data/daily.txt'
+
+SERVER_GUILD_ID_KEY = 'guild_id'
+SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
+SERVER_COMMAND_CHANNEL_KEY = 'command_channel'
+SERVER_RESERVATION_CHANNEL_KEY = 'reservation_channel'
+SERVER_REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
 
 async def reply_author(message, str):
     reply = f'{message.author.mention} {str}'
@@ -125,3 +143,22 @@ def convert_cancel_attack_no(str):
     except CommandError:
         raise CommandError(messages.error_cancel_attack_no)
 
+# DISCORDサーバ設定を読み込む
+def load_server_settings():
+    fp = open(DATA_SERVER_PATH, 'r')
+
+    server_setting =json.load(fp)
+
+    fp.close()
+
+    return server_setting
+
+# DISCORDサーバ設定を書き込む
+def save_server_settings(server_setting):
+    fp = open(DATA_SERVER_PATH, 'w')
+
+    json.dump(server_setting, fp, indent=4)
+
+    fp.close()
+
+    return

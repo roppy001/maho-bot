@@ -17,19 +17,6 @@ import cancel
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
-GUILD_ID_KEY = 'guild_id'
-CATEGORY_CHANNEL_KEY = 'category_channel'
-COMMAND_CHANNEL_KEY = 'command_channel'
-RESERVATION_CHANNEL_KEY = 'reservation_channel'
-REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
-
-SERVER_TEXT_PATH = 'data/server.txt'
-
-DATA_SERVER_KEY = "server"
-DATA_MEMBER_KEY = "member"
-DATA_BOSS_KEY = "boss"
-DATA_DAILY_KEY = "daily"
-
 ok_hand = "👌"
 data = dict()
 
@@ -62,14 +49,14 @@ async def on_message(message):
 
     await recreate_channels_if_not_exist(message.guild)
 
-    data[DATA_SERVER_KEY] = load_server_settings()
+    data[common.DATA_SERVER_KEY] = common.load_server_settings()
 
     # .で始まらない場合はコマンドではないので無視する
     if not message.content.startswith('.') :
         return
 
     # コマンド入力チャンネルではない場合は無視する
-    if message.channel.id != data[DATA_SERVER_KEY][COMMAND_CHANNEL_KEY] :
+    if message.channel.id != data[common.DATA_SERVER_KEY][common.SERVER_COMMAND_CHANNEL_KEY] :
         return
 
     # メンションの全IDを取得
@@ -120,36 +107,24 @@ async def create_bot_channels(guild):
     rest_detail_channel = await guild.create_text_channel('残凸状況表示',category = category_channel )
 
     server_setting = {
-        GUILD_ID_KEY : guild.id,
-        CATEGORY_CHANNEL_KEY : category_channel.id,
-        COMMAND_CHANNEL_KEY : command_channel.id,
-        RESERVATION_CHANNEL_KEY : reservation_channel.id,
-        REST_DETAIL_CHANNEL_KEY : rest_detail_channel.id
+        common.SERVER_GUILD_ID_KEY : guild.id,
+        common.SERVER_CATEGORY_CHANNEL_KEY : category_channel.id,
+        common.SERVER_COMMAND_CHANNEL_KEY : command_channel.id,
+        common.SERVER_RESERVATION_CHANNEL_KEY : reservation_channel.id,
+        common.SERVER_REST_DETAIL_CHANNEL_KEY : rest_detail_channel.id
     }
 
-    fp = open(SERVER_TEXT_PATH, 'w')
+    data[common.DATA_SERVER_KEY] = server_setting
 
-    json.dump(server_setting, fp, indent=4)
-
-    fp.close()
+    common.save_server_settings(data[common.DATA_SERVER_KEY])
 
     return
 
 async def recreate_channels_if_not_exist(guild):
-    if(not os.path.exists(SERVER_TEXT_PATH)) :
+    if(not os.path.exists(common.DATA_SERVER_PATH)) :
         await create_bot_channels(guild)
 
     return
-
-
-def load_server_settings():
-    fp = open(SERVER_TEXT_PATH, 'r')
-
-    server_setting =json.load(fp)
-
-    fp.close()
-
-    return server_setting
 
 
 # 60秒に一回ループ
