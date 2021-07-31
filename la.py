@@ -16,6 +16,9 @@ def la(data, command_args, mention_ids):
 
         attack_index = da[1]
 
+        # クラメンとして登録済みかをチェック
+        common.check_registered_member(data, target_id)
+
     except common.CommandError as ce: 
         raise common.CommandError(ce.args[0] + '\n' + messages.cmd_la_arg)
 

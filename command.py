@@ -14,6 +14,7 @@ import reserve
 import fin
 import la
 import cancel
+import member
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
@@ -25,7 +26,9 @@ COMMAND_LIST = [
     (['.reserve', '.re', '.予約'], reserve.reserve),
     (['.finish', '.fin', '.完了'], fin.fin),
     (['.lastattack', '.la', '.討伐'], la.la),
-    (['.cancel', '.cl', '.取消'], cancel.cancel)
+    (['.cancel', '.cl', '.取消'], cancel.cancel),
+    (['.add', '.追加'], member.add),
+    (['.remove', '.削除'], member.remove)
     ]
 
 # ボス周変更コマンド
@@ -58,6 +61,15 @@ async def on_message(message):
     # コマンド入力チャンネルではない場合は無視する
     if message.channel.id != data[common.DATA_SERVER_KEY][common.SERVER_COMMAND_CHANNEL_KEY] :
         return
+
+    # メンバ情報を取得
+    try:
+        data[common.DATA_MEMBER_KEY] = common.load_members()
+    except FileNotFoundError:
+        await common.reply_author(message, messages.error_init_member)
+        data[common.DATA_MEMBER_KEY] = []
+        common.save_members(data[common.DATA_MEMBER_KEY])
+
 
     # メンションの全IDを取得
     mention_re = re.compile('<@!\d+>')

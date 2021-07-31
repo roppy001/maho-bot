@@ -7,6 +7,8 @@ error_damage = 'ダメージは数値0～99999を入力しとぉくれやす'
 error_carry_over = '持ち越し秒数は21~90の範囲で入力しとぉくれやす'
 error_cmd_none = '正しいコマンドを入力しとぉくれやす'
 error_multi_mention = '複数のメンション付けられてます'
+error_init_member = '初回起動もしくは設定読込の失敗のため、クラメン情報が初期化されました'
+error_not_member = 'クラメンとして登録されてないメンバです'
 
 error_boss_no_with_lap_no = 'ボス番号は ボス番号(1～5) もしくは ボス番号+ もしくは ボス番号@周(1～180) で指定しとぉくれやす'
 error_damage_with_attack_no = 'ダメージは ダメージ もしくは ダメージm もしくは ダメージm1～3 で指定しとぉくれやす'
@@ -19,3 +21,4 @@ cmd_fin_arg = '.fin ボス番号 実績ダメージ(万単位)[m[何凸目か]]\
 cmd_la_arg = '.la ボス番号 持ち越し秒数 or m[何凸目か]\n(例: .la 5 m)'
 cmd_cancel_arg = '.cl ボス番号[@周 or +] [何凸目か or m[何凸目か]]号\n(例: .cl 5 3)'
 cmd_add_arg = '.add (追加したいメンバをメンション) \n(例: .add @マホ )'
+cmd_add_arg = '.remove (追加したいメンバをメンション) \n(例: .remove @マホ )'

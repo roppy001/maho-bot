@@ -27,6 +27,8 @@ SERVER_COMMAND_CHANNEL_KEY = 'command_channel'
 SERVER_RESERVATION_CHANNEL_KEY = 'reservation_channel'
 SERVER_REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
 
+MEMBER_ID_KEY = 'id'
+
 async def reply_author(message, str):
     reply = f'{message.author.mention} {str}'
     await message.channel.send(reply)
@@ -143,6 +145,13 @@ def convert_cancel_attack_no(str):
     except CommandError:
         raise CommandError(messages.error_cancel_attack_no)
 
+def check_registered_member(data, id):
+    for m in data[DATA_MEMBER_KEY]:
+        if id == m[MEMBER_ID_KEY]:
+            return
+    
+    raise CommandError(messages.error_not_member)
+
 # DISCORDサーバ設定を読み込む
 def load_server_settings():
     fp = open(DATA_SERVER_PATH, 'r')
@@ -158,6 +167,26 @@ def save_server_settings(server_setting):
     fp = open(DATA_SERVER_PATH, 'w')
 
     json.dump(server_setting, fp, indent=4)
+
+    fp.close()
+
+    return
+
+# メンバ設定を読み込む
+def load_members():
+    fp = open(DATA_MEMBER_PATH, 'r')
+
+    server_setting =json.load(fp)
+
+    fp.close()
+
+    return server_setting
+
+# メンバ設定を書き込む
+def save_members(members):
+    fp = open(DATA_MEMBER_PATH, 'w')
+
+    json.dump(members, fp, indent=4)
 
     fp.close()
 

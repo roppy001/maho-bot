@@ -27,6 +27,9 @@ def reserve(data, command_args, mention_ids):
             comment = command_args[3]
 
 
+        # クラメンとして登録済みかをチェック
+        common.check_registered_member(data, target_id)
+
 
     except common.CommandError as ce: 
         raise common.CommandError(ce.args[0] + '\n' + messages.cmd_re_arg)
