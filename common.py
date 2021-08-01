@@ -27,7 +27,12 @@ CONFIG_PHASE_KEY = 'phase'
 CONFIG_BOSS_KEY = 'boss'
 
 BOSS_NAME_KEY = 'name'
-BOSS_MAX_HP_KEY = 'map_hp'
+BOSS_LAP_NO_KEY = 'lap_no'
+BOSS_MAX_HP_KEY = 'max_hp'
+BOSS_HP_KEY = 'hp'
+BOSS_STATUS_KEY = 'status'
+BOSS_STATUS_ALIVE = 0
+BOSS_STATUS_DEFEATED = 1
 
 SERVER_GUILD_ID_KEY = 'guild_id'
 SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
@@ -160,9 +165,29 @@ def check_registered_member(data, id):
     
     raise CommandError(messages.error_not_member)
 
+def init_boss(data):
+    boss_config = data[DATA_CONFIG_KEY][CONFIG_BOSS_KEY]
+
+    new_boss_list = []
+
+    for b in boss_config:
+        new_boss = {}
+        new_boss[BOSS_NAME_KEY] = b[BOSS_NAME_KEY]
+        new_boss[BOSS_LAP_NO_KEY] = 1
+        new_boss[BOSS_MAX_HP_KEY] = b[BOSS_MAX_HP_KEY][0]
+        new_boss[BOSS_HP_KEY] = b[BOSS_MAX_HP_KEY][0]
+        new_boss[BOSS_STATUS_KEY] = BOSS_STATUS_ALIVE
+
+        new_boss_list.append(new_boss)
+
+    save_boss(new_boss_list)
+
+    data[DATA_BOSS_KEY] = new_boss_list
+
+
 # DISCORDサーバ設定を読み込む
 def load_server_settings():
-    fp = open(DATA_SERVER_PATH, 'r')
+    fp = open(DATA_SERVER_PATH, 'r', encoding="utf-8")
 
     server_setting =json.load(fp)
 
@@ -172,7 +197,7 @@ def load_server_settings():
 
 # DISCORDサーバ設定を書き込む
 def save_server_settings(server_setting):
-    fp = open(DATA_SERVER_PATH, 'w')
+    fp = open(DATA_SERVER_PATH, 'w', encoding="utf-8")
 
     json.dump(server_setting, fp, indent=4)
 
@@ -182,7 +207,7 @@ def save_server_settings(server_setting):
 
 # メンバ設定を読み込む
 def load_members():
-    fp = open(DATA_MEMBER_PATH, 'r')
+    fp = open(DATA_MEMBER_PATH, 'r', encoding="utf-8")
 
     server_setting =json.load(fp)
 
@@ -192,7 +217,7 @@ def load_members():
 
 # メンバ設定を書き込む
 def save_members(members):
-    fp = open(DATA_MEMBER_PATH, 'w')
+    fp = open(DATA_MEMBER_PATH, 'w', encoding="utf-8")
 
     json.dump(members, fp, indent=4)
 
@@ -200,12 +225,33 @@ def save_members(members):
 
     return
 
-# メンバ設定を読み込む
+# 各種設定を読み込む
 def load_config():
-    fp = open(DATA_CONFIG_PATH, 'r')
+    fp = open(DATA_CONFIG_PATH, 'r', encoding="utf-8")
 
     config =json.load(fp)
 
     fp.close()
 
     return config
+
+# ボス情報を読み込む
+def load_boss():
+    fp = open(DATA_BOSS_PATH, 'r', encoding="utf-8")
+
+    boss =json.load(fp)
+
+    fp.close()
+
+    return boss
+
+# ボス情報を書き込む
+def save_boss(boss):
+    fp = open(DATA_BOSS_PATH, 'w', encoding="utf-8")
+
+    json.dump(boss, fp, indent=4)
+
+    fp.close()
+
+    return
+

@@ -72,6 +72,11 @@ async def on_message(message):
         data[common.DATA_MEMBER_KEY] = []
         common.save_members(data[common.DATA_MEMBER_KEY])
 
+    # ボス情報を取得
+    try:
+        data[common.DATA_BOSS_KEY] = common.load_boss()
+    except FileNotFoundError:
+        common.init_boss(data)
 
     # メンションの全IDを取得
     mention_re = re.compile('<@!\d+>')
@@ -82,8 +87,6 @@ async def on_message(message):
         command_str = message.content[:mention_match.start(0)]
     else :
         command_str = message.content
-
-    print(command_str)
 
     # メンションを文字列から削除したのち、空白でコマンドを分割
     command_args = re.split('\s+', command_str.replace('　',' ').strip() )
