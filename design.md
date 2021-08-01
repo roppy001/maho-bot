@@ -19,12 +19,11 @@ data/
 JSON形式
 [
 {
- "name" : "ゴブリングレート"
- "lap_no" : 5
- "max_hp" : 8500
- "hp" : 4500
+ "name" : "ゴブリングレート",
+ "lap_no" : 5,
+ "max_hp" : 8500,
+ "hp" : 4500,
  "status" : 0
- "message_id" : ""
 },
 
 省略
@@ -67,12 +66,12 @@ JSON形式
                {"status" : 2}]
    "reservation" :
     [[{
-       "seq" : 0
-       "branch" : 0
-       "status" : 0
-       "lap_no" : 1
-       "boss_id" : 0
-       "damage" : 0
+       "seq" : 0,
+       "branch" : 0,
+       "status" : 0,
+       "lap_no" : 1,
+       "boss_id" : 0,
+       "damage" : 0,
        "registered_date" : 0
       },
       {
