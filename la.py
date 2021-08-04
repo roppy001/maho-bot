@@ -22,4 +22,5 @@ def la(data, command_args, mention_ids):
     except common.CommandError as ce: 
         raise common.CommandError(ce.args[0] + '\n' + messages.cmd_la_arg)
 
-    return
+    return (True,'')
+

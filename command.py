@@ -15,6 +15,7 @@ import fin
 import la
 import cancel
 import member
+import view
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
@@ -98,18 +99,36 @@ async def on_message(message):
     if len(mention_ids)==0 :
         mention_ids.append(message.author.id)
 
+    ref = (False,'')
+
     try:
+        flg = True
         for c in COMMAND_LIST :
             if command_args[0] in c[0] :
-                c[1](data, command_args, mention_ids)
+                ref = c[1](data, command_args, mention_ids)
                 await message.add_reaction(ok_hand)
-                return
+                flg = False
+                break
+        
+        if flg:
+            await common.reply_author(message, messages.error_cmd_none)
+            return
         
     except common.CommandError as ce :
         await common.reply_author(message, ce.args[0])
         return
+    
+    reservation_message = await fetch_reservation_message(message.guild)
 
-    await common.reply_author(message, messages.error_cmd_none)
+    rest_detail_message = await fetch_rest_detail_message(message.guild)
+
+    if ref[0]:
+        await view.display_reservation(data, reservation_message)
+        await view.display_rest_detail(data, rest_detail_message)
+
+    if ref[1] != '':
+        await common.reply_author(message, ref[1])
+
     return
 
 @client.event
@@ -117,6 +136,7 @@ async def on_guild_join(guild):
     await create_bot_channels(guild) 
     return
 
+# bot用のチャンネルを生成
 async def create_bot_channels(guild):
     category_channel    = await guild.create_category_channel('マホBOT')
     command_channel     = await guild.create_text_channel('コマンド入力',category = category_channel )
@@ -137,12 +157,62 @@ async def create_bot_channels(guild):
 
     return
 
+# 設定ファイルが無い場合は、チャンネルを新たに生成
 async def recreate_channels_if_not_exist(guild):
     if(not os.path.exists(common.DATA_SERVER_PATH)) :
         await create_bot_channels(guild)
 
     return
 
+# 予約表示用メッセージを取得
+async def fetch_reservation_message(guild):
+    server = data[common.DATA_SERVER_KEY]
+
+    channel = guild.get_channel(server[common.SERVER_RESERVATION_CHANNEL_KEY])
+
+    if (not common.SERVER_RESERVATION_MESSAGE_KEY in server):
+        message = await channel.send('よやく')
+        message_id = message.id
+        server[common.SERVER_RESERVATION_MESSAGE_KEY] = message_id
+        common.save_server_settings(server)
+
+    message_id = server[common.SERVER_RESERVATION_MESSAGE_KEY]
+    message = channel.get_partial_message(message_id)
+
+    try:
+        message = await message.fetch()
+    except discord.NotFound:
+        message = await channel.send('よやく')
+        message_id = message.id
+        server[common.SERVER_RESERVATION_MESSAGE_KEY] = message_id
+        common.save_server_settings(server)
+
+    return message
+
+# 残凸表示用メッセージを取得
+async def fetch_rest_detail_message(guild):
+    server = data[common.DATA_SERVER_KEY]
+
+    channel = guild.get_channel(server[common.SERVER_REST_DETAIL_CHANNEL_KEY])
+
+    if (not common.SERVER_REST_DETAIL_MESSAGE_KEY in server):
+        message = await channel.send('ざんとつ')
+        message_id = message.id
+        server[common.SERVER_REST_DETAIL_MESSAGE_KEY] = message_id
+        common.save_server_settings(server)
+
+    message_id = server[common.SERVER_REST_DETAIL_MESSAGE_KEY]
+    message = channel.get_partial_message(message_id)
+
+    try:
+        message = await message.fetch()
+    except discord.NotFound:
+        message = await channel.send('ざんとつ')
+        message_id = message.id
+        server[common.SERVER_REST_DETAIL_MESSAGE_KEY] = message_id
+        common.save_server_settings(server)
+
+    return message
 
 # 60秒に一回ループ
 #@tasks.loop(seconds=60)

@@ -40,6 +40,9 @@ SERVER_COMMAND_CHANNEL_KEY = 'command_channel'
 SERVER_RESERVATION_CHANNEL_KEY = 'reservation_channel'
 SERVER_REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
 
+SERVER_RESERVATION_MESSAGE_KEY = 'reservation_message'
+SERVER_REST_DETAIL_MESSAGE_KEY = 'rest_detail_message'
+
 MEMBER_ID_KEY = 'id'
 
 async def reply_author(message, str):
