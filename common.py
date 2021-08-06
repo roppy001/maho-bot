@@ -1,6 +1,8 @@
 from os import stat_result
 import json
 
+import discord
+
 import messages
 
 class CommandError(Exception):
