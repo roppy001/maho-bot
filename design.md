@@ -72,7 +72,7 @@ JSON形式
        "lap_no" : 1,
        "boss_id" : 0,
        "damage" : 0,
-       "registered_date" : 0
+       "datetime" : 0
       },
       {
       }],
