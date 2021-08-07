@@ -57,7 +57,7 @@ JSON形式
 ## daily.txt
 ~~~
 {
- "day" : "20210724"
+ "date" : "2021-07-24"
  "member" :
  [{
    "id" : "123456789012345678",
@@ -72,7 +72,7 @@ JSON形式
        "lap_no" : 1,
        "boss_id" : 0,
        "damage" : 0,
-       "datetime" : 0
+       "datetime" : "2021-07-24T16:23:15"
       },
       {
       }],
