@@ -67,7 +67,7 @@ JSON形式
                 {"status" : 2}]
     "reservation" :
      [[{
-        "status" : 0,
+        "status" : 1,
         "lap_no" : 1,
         "boss_id" : 0,
         "damage" : 0,
