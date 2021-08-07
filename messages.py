@@ -1,3 +1,6 @@
+# お知らせ文言
+msg_new_daily = '日付変わり、予約情報初期化されたで'
+
 # エラー文言
 error_args = '正しい引数を入力しとぉくれやす'
 error_boss_no = 'ボス番号は1~5を入力しとぉくれやす'
@@ -22,3 +25,4 @@ cmd_la_arg = '.la ボス番号 持ち越し秒数 or m[何凸目か]\n(例: .la 
 cmd_cancel_arg = '.cl ボス番号[@周 or +] [何凸目か or m[何凸目か]]号\n(例: .cl 5 3)'
 cmd_add_arg = '.add (追加したいメンバをメンション) \n(例: .add @マホ )'
 cmd_add_arg = '.remove (追加したいメンバをメンション) \n(例: .remove @マホ )'
+

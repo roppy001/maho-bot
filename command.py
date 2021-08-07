@@ -2,7 +2,7 @@
 import os
 import json
 import re
-from datetime import datetime
+import datetime
 
 # 追加インストール
 import discord
@@ -20,7 +20,6 @@ import view
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
 ok_hand = "👌"
-data = dict()
 
 ## コマンド
 COMMAND_LIST = [
@@ -49,9 +48,11 @@ async def on_ready():
 @client.event
 async def on_message(message):
     # await message.guild.leave()
-    # return
+    # return 
 
-    await recreate_channels_if_not_exist(message.guild)
+    data = dict()
+
+    await recreate_channels_if_not_exist(data, message.guild)
 
     data[common.DATA_CONFIG_KEY] = common.load_config()
     
@@ -78,6 +79,18 @@ async def on_message(message):
         data[common.DATA_BOSS_KEY] = common.load_boss()
     except FileNotFoundError:
         common.init_boss(data)
+
+    # 日次予約情報を取得
+    try:
+        data[common.DATA_DAILY_KEY] = common.load_daily()
+
+        if datetime.date.fromisoformat(data[common.DATA_DAILY_KEY][common.DAILY_DATE_KEY]) < common.get_date(datetime.datetime.now()):
+            common.init_daily(data)
+            await common.reply_author(message, messages.msg_new_daily)
+
+    except FileNotFoundError:
+        common.init_daily(data)
+
 
     # メンションの全IDを取得
     mention_re = re.compile('<@!\d+>')
@@ -118,9 +131,9 @@ async def on_message(message):
         await common.reply_author(message, ce.args[0])
         return
     
-    reservation_message = await fetch_reservation_message(message.guild)
+    reservation_message = await fetch_reservation_message(data, message.guild)
 
-    rest_detail_message = await fetch_rest_detail_message(message.guild)
+    rest_detail_message = await fetch_rest_detail_message(data, message.guild)
 
     if ref[0]:
         await view.display_reservation(data, reservation_message)
@@ -133,11 +146,12 @@ async def on_message(message):
 
 @client.event
 async def on_guild_join(guild):
-    await create_bot_channels(guild) 
+    data = dict()
+    await create_bot_channels(data, guild) 
     return
 
 # bot用のチャンネルを生成
-async def create_bot_channels(guild):
+async def create_bot_channels(data, guild):
     category_channel    = await guild.create_category_channel('マホBOT')
     command_channel     = await guild.create_text_channel('コマンド入力',category = category_channel )
     reservation_channel = await guild.create_text_channel('予約状況表示',category = category_channel )
@@ -158,14 +172,14 @@ async def create_bot_channels(guild):
     return
 
 # 設定ファイルが無い場合は、チャンネルを新たに生成
-async def recreate_channels_if_not_exist(guild):
+async def recreate_channels_if_not_exist(data, guild):
     if(not os.path.exists(common.DATA_SERVER_PATH)) :
-        await create_bot_channels(guild)
+        await create_bot_channels(data, guild)
 
     return
 
 # 予約表示用メッセージを取得
-async def fetch_reservation_message(guild):
+async def fetch_reservation_message(data, guild):
     server = data[common.DATA_SERVER_KEY]
 
     channel = guild.get_channel(server[common.SERVER_RESERVATION_CHANNEL_KEY])
@@ -190,7 +204,7 @@ async def fetch_reservation_message(guild):
     return message
 
 # 残凸表示用メッセージを取得
-async def fetch_rest_detail_message(guild):
+async def fetch_rest_detail_message(data, guild):
     server = data[common.DATA_SERVER_KEY]
 
     channel = guild.get_channel(server[common.SERVER_REST_DETAIL_CHANNEL_KEY])

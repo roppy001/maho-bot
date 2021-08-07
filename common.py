@@ -1,5 +1,6 @@
 from os import stat_result
 import json
+import datetime
 
 import discord
 
@@ -35,6 +36,23 @@ BOSS_HP_KEY = 'hp'
 BOSS_STATUS_KEY = 'status'
 BOSS_STATUS_ALIVE = 0
 BOSS_STATUS_DEFEATED = 1
+
+DAILY_DATE_KEY = 'date'
+DAILY_MEMBER_KEY = 'member'
+DAILY_MEMBER_ID_KEY = 'id'
+DAILY_MEMBER_ATTACK_KEY = 'attack'
+DAILY_MEMBER_ATTACK_STATUS_KEY = 'status'
+DAILY_MEMBER_ATTACK_CARRY_OVER_KEY = 'carry_over'
+DAILY_MEMBER_RESERVATION_KEY = 'reservation'
+DAILY_MEMBER_RESERVATION_SEQ_KEY = 'seq'
+DAILY_MEMBER_RESERVATION_BRANCH_KEY = 'branch'
+DAILY_MEMBER_RESERVATION_STATUS_KEY = 'status'
+DAILY_MEMBER_RESERVATION_LAP_NO_KEY = 'lap_no'
+DAILY_MEMBER_RESERVATION_BOSS_ID_KEY = 'boss_id'
+DAILY_MEMBER_RESERVATION_DAMAGE_KEY = 'damage'
+DAILY_MEMBER_RESERVATION_DATETIME_KEY = 'datetime'
+
+
 
 SERVER_GUILD_ID_KEY = 'guild_id'
 SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
@@ -188,6 +206,25 @@ def init_boss(data):
     save_boss(new_boss_list)
 
     data[DATA_BOSS_KEY] = new_boss_list
+    
+    return
+
+#現在時刻から午前5時以降を当日とする日付を返却
+def get_date(dt : datetime.datetime):
+    return (dt + datetime.timedelta(hours=-5)).date()
+
+def init_daily(data):
+
+    new_daily = {}
+    
+    #現在日付を取得し格納
+    new_daily[DAILY_DATE_KEY] = get_date(datetime.datetime.now()).isoformat()
+
+    save_daily(new_daily)
+
+    data[DATA_BOSS_KEY] = new_daily
+
+    return
 
 
 # DISCORDサーバ設定を読み込む
@@ -255,6 +292,26 @@ def save_boss(boss):
     fp = open(DATA_BOSS_PATH, 'w', encoding="utf-8")
 
     json.dump(boss, fp, indent=4)
+
+    fp.close()
+
+    return
+
+# 日次予約情報を読み込む
+def load_daily():
+    fp = open(DATA_DAILY_PATH, 'r', encoding="utf-8")
+
+    daily =json.load(fp)
+
+    fp.close()
+
+    return daily
+
+# 日次予約情報を書き込む
+def save_daily(daily):
+    fp = open(DATA_DAILY_PATH, 'w', encoding="utf-8")
+
+    json.dump(daily, fp, indent=4)
 
     fp.close()
 
