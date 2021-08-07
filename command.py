@@ -19,7 +19,7 @@ import view
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
-ok_hand = "👌"
+ok_hand = '\N{OK HAND SIGN}'
 
 ## コマンド
 COMMAND_LIST = [
