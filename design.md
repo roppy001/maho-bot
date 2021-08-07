@@ -59,28 +59,30 @@ JSON形式
 {
  "date" : "2021-07-24"
  "member" :
- [{
-   "id" : "123456789012345678",
-   "attack" : [{"status" : 0},
-               {"status" : 1, "carry_over" : 65},
-               {"status" : 2}]
-   "reservation" :
-    [[{
-       "seq" : 0,
-       "branch" : 0,
-       "status" : 0,
-       "lap_no" : 1,
-       "boss_id" : 0,
-       "damage" : 0,
-       "datetime" : "2021-07-24T16:23:15"
-      },
-      {
-      }],
-      [省略],
-      [省略]]
-  },
-  省略
- ]
+ {
+  "123456789012345678":
+   {
+    "attack" : [{"status" : 0},
+                {"status" : 1, "carry_over" : 65},
+                {"status" : 2}]
+    "reservation" :
+     [[{
+        "seq" : 0,
+        "branch" : 0,
+        "status" : 0,
+        "lap_no" : 1,
+        "boss_id" : 0,
+        "damage" : 0,
+        "datetime" : "2021-07-24T16:23:15"
+       },
+       {
+       }],
+       [省略],
+       [省略]]
+   }
+ },
+ 省略
+}
 ~~~
 
  * day : 5時切り替えの日を記録 5時の切り替えが必要かの判定に用いる
