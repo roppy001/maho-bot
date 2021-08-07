@@ -9,6 +9,12 @@ import messages
 class CommandError(Exception):
     pass
 
+# 1日は3凸まで
+ATTACK_MAX = 3
+
+# クラン最大人数 30人
+MEMBER_MAX = 30
+
 LAP_CURRENT = -1
 LAP_NEXT = -2
 ATTACK_MAIN = -1
@@ -39,20 +45,24 @@ BOSS_STATUS_DEFEATED = 1
 
 DAILY_DATE_KEY = 'date'
 DAILY_MEMBER_KEY = 'member'
-# DAILY_MEMBER_ID_KEY = 'id'
 DAILY_MEMBER_ATTACK_KEY = 'attack'
 DAILY_MEMBER_ATTACK_STATUS_KEY = 'status'
 DAILY_MEMBER_ATTACK_CARRY_OVER_KEY = 'carry_over'
 DAILY_MEMBER_RESERVATION_KEY = 'reservation'
-DAILY_MEMBER_RESERVATION_SEQ_KEY = 'seq'
-DAILY_MEMBER_RESERVATION_BRANCH_KEY = 'branch'
 DAILY_MEMBER_RESERVATION_STATUS_KEY = 'status'
 DAILY_MEMBER_RESERVATION_LAP_NO_KEY = 'lap_no'
 DAILY_MEMBER_RESERVATION_BOSS_ID_KEY = 'boss_id'
 DAILY_MEMBER_RESERVATION_DAMAGE_KEY = 'damage'
+DAILY_MEMBER_RESERVATION_COMMENT_KEY = 'comment'
 DAILY_MEMBER_RESERVATION_DATETIME_KEY = 'datetime'
 
+DAILY_ATTACK_STATUS_NONE = 0 
+DAILY_ATTACK_STATUS_CARRY_OVER = 1
+DAILY_ATTACK_STATUS_DONE = 2 
 
+DAILY_RESERVE_STATUS_NONE = 0 
+DAILY_RESERVE_STATUS_RESERVED = 1
+DAILY_RESERVE_STATUS_DONE = 2 
 
 SERVER_GUILD_ID_KEY = 'guild_id'
 SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
@@ -213,6 +223,7 @@ def init_boss(data):
 def get_date(dt : datetime.datetime):
     return (dt + datetime.timedelta(hours=-5)).date()
 
+#日次予約情報を初期化
 def init_daily(data):
 
     new_daily = {}
@@ -225,6 +236,23 @@ def init_daily(data):
     data[DATA_BOSS_KEY] = new_daily
 
     return
+
+#日次予約情報の初期化データを生成
+def create_daily_member():
+    new_member = {}
+    atk = []
+
+    for i in range(0, ATTACK_MAX):
+        s = {}
+        s[DAILY_MEMBER_ATTACK_STATUS_KEY] = DAILY_ATTACK_STATUS_NONE
+        s[DAILY_MEMBER_ATTACK_CARRY_OVER_KEY] = 0
+        atk.append(s)
+
+    new_member[DAILY_MEMBER_ATTACK_KEY] = atk
+
+    new_member[DAILY_MEMBER_RESERVATION_KEY] = []
+
+    return new_member
 
 
 # DISCORDサーバ設定を読み込む
