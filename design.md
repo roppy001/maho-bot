@@ -67,8 +67,6 @@ JSON形式
                 {"status" : 2}]
     "reservation" :
      [[{
-        "seq" : 0,
-        "branch" : 0,
         "status" : 0,
         "lap_no" : 1,
         "boss_id" : 0,
@@ -85,7 +83,7 @@ JSON形式
 }
 ~~~
 
- * day : 5時切り替えの日を記録 5時の切り替えが必要かの判定に用いる
+ * date : 5時切り替えの日を記録 5時の切り替えが必要かの判定に用いる
 
 ## server.txt
 ~~~
