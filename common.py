@@ -39,7 +39,7 @@ BOSS_STATUS_DEFEATED = 1
 
 DAILY_DATE_KEY = 'date'
 DAILY_MEMBER_KEY = 'member'
-DAILY_MEMBER_ID_KEY = 'id'
+# DAILY_MEMBER_ID_KEY = 'id'
 DAILY_MEMBER_ATTACK_KEY = 'attack'
 DAILY_MEMBER_ATTACK_STATUS_KEY = 'status'
 DAILY_MEMBER_ATTACK_CARRY_OVER_KEY = 'carry_over'
@@ -219,7 +219,7 @@ def init_daily(data):
     
     #現在日付を取得し格納
     new_daily[DAILY_DATE_KEY] = get_date(datetime.datetime.now()).isoformat()
-
+    new_daily[DAILY_MEMBER_KEY] = {}
     save_daily(new_daily)
 
     data[DATA_BOSS_KEY] = new_daily
