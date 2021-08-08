@@ -15,6 +15,9 @@ ATTACK_MAX = 3
 # クラン最大人数 30人
 MEMBER_MAX = 30
 
+# ボス5匹
+BOSS_MAX = 5
+
 LAP_CURRENT = -1
 LAP_NEXT = -2
 ATTACK_MAIN = -1
@@ -34,6 +37,7 @@ DATA_DAILY_PATH = 'data/daily.txt'
 
 CONFIG_PHASE_KEY = 'phase'
 CONFIG_BOSS_KEY = 'boss'
+CONFIG_RESERVATION_LIMIT_KEY = 'reservation_limit'
 
 BOSS_NAME_KEY = 'name'
 BOSS_LAP_NO_KEY = 'lap_no'
@@ -49,12 +53,16 @@ DAILY_MEMBER_ATTACK_KEY = 'attack'
 DAILY_MEMBER_ATTACK_STATUS_KEY = 'status'
 DAILY_MEMBER_ATTACK_CARRY_OVER_KEY = 'carry_over'
 DAILY_MEMBER_RESERVATION_KEY = 'reservation'
-DAILY_MEMBER_RESERVATION_STATUS_KEY = 'status'
-DAILY_MEMBER_RESERVATION_LAP_NO_KEY = 'lap_no'
-DAILY_MEMBER_RESERVATION_BOSS_ID_KEY = 'boss_id'
-DAILY_MEMBER_RESERVATION_DAMAGE_KEY = 'damage'
-DAILY_MEMBER_RESERVATION_COMMENT_KEY = 'comment'
-DAILY_MEMBER_RESERVATION_DATETIME_KEY = 'datetime'
+RESERVATION_STATUS_KEY = 'status'
+RESERVATION_LAP_NO_KEY = 'lap_no'
+RESERVATION_BOSS_ID_KEY = 'boss_id'
+RESERVATION_DAMAGE_KEY = 'damage'
+RESERVATION_COMMENT_KEY = 'comment'
+RESERVATION_DATETIME_KEY = 'datetime'
+RESERVATION_ID_KEY = 'id'
+RESERVATION_SEQ_KEY = 'seq'
+RESERVATION_BRANCH_KEY = 'branch'
+
 
 DAILY_ATTACK_STATUS_NONE = 0 
 DAILY_ATTACK_STATUS_CARRY_OVER = 1
@@ -91,7 +99,7 @@ def get_target_id(mention_ids):
 def convert_boss_no(boss_no):
     try:
         r = int(boss_no)
-        if r<1 or r>5 :
+        if r<1 or r>BOSS_MAX :
             raise CommandError(messages.error_boss_no)
         return r-1
     except ValueError:
@@ -144,7 +152,7 @@ def convert_boss_no_with_lap_no(str):
         if len(strs)==1:
             return (convert_boss_no(str), LAP_CURRENT)
         elif len(strs)==2:
-            return (convert_boss_no(strs[0]), convert_boss_no(strs[1]))
+            return (convert_boss_no(strs[0]), convert_lap_no(strs[1]))
         else:
             raise CommandError()
     except CommandError:
@@ -223,6 +231,18 @@ def init_boss(data):
 def get_date(dt : datetime.datetime):
     return (dt + datetime.timedelta(hours=-5)).date()
 
+#全ボスの中で最もlap_noが小さい値を得る
+def get_min_lap_no(data):
+    boss = data[DATA_BOSS_KEY]
+
+    min_lap = 9999
+
+    for b in boss:
+        min_lap = min(min_lap, b[BOSS_LAP_NO_KEY])
+
+    return min_lap
+
+
 #日次予約情報を初期化
 def init_daily(data):
 
@@ -254,6 +274,50 @@ def create_daily_member():
 
     return new_member
 
+# 予約情報を周、ボスごとに集計しなおし、登録時間でソートしたデータを生成
+def generate_reservation_dict(data):
+    def datetime_compare(d):
+        return d[RESERVATION_DATETIME_KEY]
+
+    dic = {}
+
+    # 登録メンバのみを抽出
+    member_list = data[DAILY_MEMBER_KEY]
+
+    for m in member_list:
+        member_id = m[MEMBER_ID_KEY]
+        member_key = str(member_id)
+
+        daily_member = data[DATA_DAILY_KEY][DAILY_MEMBER_KEY]
+
+        if member_key in daily_member:
+            res_list = daily_member[member_key][DAILY_MEMBER_RESERVATION_KEY]
+
+            for i in range(0, len(res_list)):
+                for j in range(0, len(res_list[i])):
+                    res = res_list[i][j]
+
+                    new_res = dict(res)
+                    new_res[RESERVATION_ID_KEY] = member_id
+                    new_res[RESERVATION_SEQ_KEY] = i
+                    new_res[RESERVATION_BRANCH_KEY] = j
+
+                    lap_no = new_res[RESERVATION_LAP_NO_KEY]
+                    lap_key = str(lap_no)
+
+                    if not lap_key in dic:
+                        dic[lap_key] = []
+                        for k in range(0,BOSS_MAX):
+                            dic[lap_key].append([])
+
+                    dic[lap_key][new_res[RESERVATION_BOSS_ID_KEY]].append(new_res)
+
+    # 各辞書のエントリを時刻順に並び替える
+    for key in dic:
+        for k in range(0,BOSS_MAX):
+            dic[lap_key][new_res[RESERVATION_BOSS_ID_KEY]].sort(key = datetime_compare)
+
+    return dic
 
 # DISCORDサーバ設定を読み込む
 def load_server_settings():

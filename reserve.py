@@ -35,11 +35,20 @@ def reserve(data, command_args, mention_ids):
 
         # ボスの現在の周を取得し、lap_noを置き換える
         current_lap_no = data[common.DATA_BOSS_KEY][boss_id][common.BOSS_LAP_NO_KEY]
+        # 討伐済みの場合は次の周の予約とする
+        if data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED:
+            current_lap_no += 1
 
         if lap_no == common.LAP_CURRENT:
             lap_no = current_lap_no
         elif lap_no == common.LAP_NEXT:
             lap_no = current_lap_no + 1
+
+        # 現在の周 + 1 + reservation_limitより大きい場合はエラー
+        min_lap = common.get_min_lap_no(data)
+
+        if lap_no > min_lap + 1 + data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY]:
+            raise common.CommandError(messages.error_reserve_limit_lap_no)
 
         now_str = datetime.datetime.now().isoformat()
 
@@ -75,7 +84,7 @@ def reserve(data, command_args, mention_ids):
                     continue
                 
                 # 本凸予約済みの場合はスキップ
-                if i < len(res) and len(res[i]) > 0 and res[i][0][common.DAILY_MEMBER_RESERVATION_STATUS_KEY] != common.DAILY_RESERVE_STATUS_NONE:
+                if i < len(res) and len(res[i]) > 0 and res[i][0][common.RESERVATION_STATUS_KEY] != common.DAILY_RESERVE_STATUS_NONE:
                     continue
 
                 # 本凸予約を追加
@@ -89,12 +98,12 @@ def reserve(data, command_args, mention_ids):
                 
                 new_reserve = {}
 
-                new_reserve[common.DAILY_MEMBER_RESERVATION_STATUS_KEY] = common.DAILY_RESERVE_STATUS_RESERVED
-                new_reserve[common.DAILY_MEMBER_RESERVATION_LAP_NO_KEY] = lap_no
-                new_reserve[common.DAILY_MEMBER_RESERVATION_BOSS_ID_KEY] = boss_id
-                new_reserve[common.DAILY_MEMBER_RESERVATION_DAMAGE_KEY] = damage
-                new_reserve[common.DAILY_MEMBER_RESERVATION_COMMENT_KEY] = comment
-                new_reserve[common.DAILY_MEMBER_RESERVATION_DATETIME_KEY] = now_str
+                new_reserve[common.RESERVATION_STATUS_KEY] = common.DAILY_RESERVE_STATUS_RESERVED
+                new_reserve[common.RESERVATION_LAP_NO_KEY] = lap_no
+                new_reserve[common.RESERVATION_BOSS_ID_KEY] = boss_id
+                new_reserve[common.RESERVATION_DAMAGE_KEY] = damage
+                new_reserve[common.RESERVATION_COMMENT_KEY] = comment
+                new_reserve[common.RESERVATION_DATETIME_KEY] = now_str
 
                 res[i][0] = new_reserve
 
@@ -106,13 +115,13 @@ def reserve(data, command_args, mention_ids):
             # 持越予約の場合
             else:
                 # ステータスが未凸で本凸未予約の場合はスキップ
-                if atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY] == common.DAILY_ATTACK_STATUS_NONE and (i >= len(res) or len(res[i]) == 0 or res[i][0][common.DAILY_MEMBER_RESERVATION_STATUS_KEY] == common.DAILY_RESERVE_STATUS_NONE):
+                if atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY] == common.DAILY_ATTACK_STATUS_NONE and (i >= len(res) or len(res[i]) == 0 or res[i][0][common.RESERVATION_STATUS_KEY] == common.DAILY_RESERVE_STATUS_NONE):
                     if i == attack_index:
                         raise common.CommandError(messages.error_reserve_impossible)
                     continue
 
                 # 持越予約済みの場合はスキップ
-                if i < len(res) and len(res[i]) > 1 and res[i][1][common.DAILY_MEMBER_RESERVATION_STATUS_KEY] != common.DAILY_RESERVE_STATUS_NONE:
+                if i < len(res) and len(res[i]) > 1 and res[i][1][common.RESERVATION_STATUS_KEY] != common.DAILY_RESERVE_STATUS_NONE:
                     if i == attack_index:
                         raise common.CommandError(messages.error_reserve_impossible)
                     continue
@@ -129,17 +138,17 @@ def reserve(data, command_args, mention_ids):
 
                 while len(res[i]) <= 1:
                     new_reserve = {}
-                    new_reserve[common.DAILY_MEMBER_RESERVATION_STATUS_KEY] = common.DAILY_RESERVE_STATUS_NONE
+                    new_reserve[common.RESERVATION_STATUS_KEY] = common.DAILY_RESERVE_STATUS_NONE
                     res[i].append(new_reserve)
                 
                 new_reserve = {}
 
-                new_reserve[common.DAILY_MEMBER_RESERVATION_STATUS_KEY] = common.DAILY_RESERVE_STATUS_RESERVED
-                new_reserve[common.DAILY_MEMBER_RESERVATION_LAP_NO_KEY] = lap_no
-                new_reserve[common.DAILY_MEMBER_RESERVATION_BOSS_ID_KEY] = boss_id
-                new_reserve[common.DAILY_MEMBER_RESERVATION_DAMAGE_KEY] = damage
-                new_reserve[common.DAILY_MEMBER_RESERVATION_COMMENT_KEY] = comment
-                new_reserve[common.DAILY_MEMBER_RESERVATION_DATETIME_KEY] = now_str
+                new_reserve[common.RESERVATION_STATUS_KEY] = common.DAILY_RESERVE_STATUS_RESERVED
+                new_reserve[common.RESERVATION_LAP_NO_KEY] = lap_no
+                new_reserve[common.RESERVATION_BOSS_ID_KEY] = boss_id
+                new_reserve[common.RESERVATION_DAMAGE_KEY] = damage
+                new_reserve[common.RESERVATION_COMMENT_KEY] = comment
+                new_reserve[common.RESERVATION_DATETIME_KEY] = now_str
 
                 res[i][1] = new_reserve
 

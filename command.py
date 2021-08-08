@@ -84,6 +84,7 @@ async def on_message(message):
     try:
         data[common.DATA_DAILY_KEY] = common.load_daily()
 
+        # 5時をまたいだ場合は初期化する
         if datetime.date.fromisoformat(data[common.DATA_DAILY_KEY][common.DAILY_DATE_KEY]) < common.get_date(datetime.datetime.now()):
             common.init_daily(data)
             await common.reply_author(message, messages.msg_new_daily)
@@ -95,6 +96,8 @@ async def on_message(message):
     # メンションの全IDを取得
     mention_re = re.compile('<@!\d+>')
     mention_ids = [int(s[3: len(s)-1]) for s in mention_re.findall(message.content)]
+
+    print(mention_ids)
 
     mention_match = mention_re.search(message.content)
     if mention_match:

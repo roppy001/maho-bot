@@ -1,6 +1,7 @@
 # 単語
 word_atk_branch = ['本凸','持越']
 word_atk_index = '凸目'
+word_name_unknown = '(不明)'
 
 # お知らせ文言
 msg_new_daily = '日付変わり、予約情報初期化されたで'
@@ -23,6 +24,7 @@ error_damage_with_attack_no = 'ダメージは ダメージ もしくは ダメ�
 error_carry_over_with_attack_no = '持ち越しは 持ち越し秒数 もしくは m もしくは m1～3 で指定しとぉくれやす'
 error_cancel_attack_no = '対象は 1～3 もしくは m1～3 で指定しとぉくれやす'
 
+error_reserve_limit_lap_no = '予約可能な範囲を超えてます'
 error_reserve_full = 'これ以上予約できしまへん'
 error_reserve_done = '該当の凸はすでに終わってます'
 error_reserve_impossible = '該当の持越し凸の予約はできしまへん'
