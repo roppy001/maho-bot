@@ -278,7 +278,7 @@ def create_daily_member():
 # 予約情報を周、ボスごとに集計しなおし、登録時間でソートしたデータを生成
 def generate_reservation_dict(data):
     def datetime_compare(d):
-        return d[RESERVATION_DATETIME_KEY]
+        return datetime.datetime.fromisoformat(d[RESERVATION_DATETIME_KEY])
 
     dic = {}
 
