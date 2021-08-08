@@ -32,6 +32,7 @@ error_reserve_limit_lap_no = '予約可能な範囲を超えてます'
 error_reserve_full = 'これ以上予約できしまへん'
 error_reserve_done = '該当の凸はすでに終わってます'
 error_reserve_impossible = '該当の持越し凸の予約はできしまへん'
+error_reserve_defeated = '既に討伐されてます'
 
 error_fin_defeated = '既に討伐されてます'
 error_fin_full = 'これ以上凸できしまへん'

@@ -44,6 +44,10 @@ def reserve(data, command_args, mention_ids):
         elif lap_no == common.LAP_NEXT:
             lap_no = current_lap_no + 1
 
+        # 討伐済の周の予約は無効化する
+        if lap_no < current_lap_no or (lap_no == current_lap_no and data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED):
+            raise common.CommandError(messages.error_reserve_defeated)
+
         # 現在の周 + 1 + reservation_limitより大きい場合はエラー
         min_lap = common.get_min_lap_no(data)
 
