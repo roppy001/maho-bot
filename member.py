@@ -48,6 +48,6 @@ def remove(data, command_args, mention_ids):
         data[common.DATA_MEMBER_KEY] = new_members
 
     except common.CommandError as ce: 
-        raise common.CommandError(ce.args[0] + '\n' + messages.cmd_add_arg)
+        raise common.CommandError(ce.args[0] + '\n' + messages.cmd_remove_arg)
 
     return (True,'')

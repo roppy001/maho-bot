@@ -41,5 +41,5 @@ cmd_fin_arg = '.fin ボス番号 実績ダメージ(万単位)[m[何凸目か]]\
 cmd_la_arg = '.la ボス番号 持ち越し秒数 or m[何凸目か]\n(例: .la 5 m)'
 cmd_cancel_arg = '.cl ボス番号[@周 or +] [何凸目か or m[何凸目か]]号\n(例: .cl 5 3)'
 cmd_add_arg = '.add (追加したいメンバをメンション) \n(例: .add @マホ )'
-cmd_add_arg = '.remove (追加したいメンバをメンション) \n(例: .remove @マホ )'
+cmd_remove_arg = '.remove (追加したいメンバをメンション) \n(例: .remove @マホ )'
 
