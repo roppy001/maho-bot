@@ -6,7 +6,8 @@ word_name_unknown = '(不明)'
 # お知らせ文言
 msg_new_daily = '日付変わり、予約情報初期化されたで'
 msg_reserve_success = 'として登録されたで'
-msg_fin_success = 'として登録されたで'
+msg_fin_success = 'として完了登録されたで'
+msg_la_success = 'として討伐登録されたで'
 
 # エラー文言
 error_lock = '他のコマンド処理を実行中どす　メッセージ続く場合はロックファイルを削除しとぉくれやす'
@@ -36,6 +37,10 @@ error_fin_defeated = '既に討伐されてます'
 error_fin_full = 'これ以上凸できしまへん'
 error_fin_damage_over = '実績ダメージが残りHP以上となってます　討伐登録をする場合は討伐コマンドで登録しとぉくれやす'
 error_fin_impossible = '該当の持越し凸の登録はできしまへん'
+
+error_la_defeated = '既に討伐されてます'
+error_la_full = 'これ以上凸できしまへん'
+error_la_impossible = '該当の持越し凸の登録はできしまへん'
 
 # 用例
 cmd_re_arg = '.re ボス番号[@周 or +] 予定ダメージ(万単位)[m[何凸目か]] [コメント]\n(例: .re 3+ 700m 討伐予定)'

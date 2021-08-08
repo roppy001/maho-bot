@@ -16,7 +16,9 @@ async def display_reservation(data, message):
         if not str(l) in dic and l >= min_lap + 2:
             continue
 
-        edit_str += f'**■{l}周目**\n'
+        phase = common.get_phase(data, l)
+
+        edit_str += f'**■{l}周目 {phase+1}段階目**\n'
         for boss_id in range(0, common.BOSS_MAX):
             b = boss[boss_id]
             if l < b[common.BOSS_LAP_NO_KEY] or (l == b[common.BOSS_LAP_NO_KEY] and b[common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED):

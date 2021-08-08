@@ -39,6 +39,7 @@ DATA_DAILY_PATH = 'data/daily.txt'
 CONFIG_PHASE_KEY = 'phase'
 CONFIG_BOSS_KEY = 'boss'
 CONFIG_RESERVATION_LIMIT_KEY = 'reservation_limit'
+CONFIG_INVALID_RESERVATION_MOVE_NEXT = 'invalid_reservation_move_next'
 
 BOSS_NAME_KEY = 'name'
 BOSS_LAP_NO_KEY = 'lap_no'
@@ -242,6 +243,29 @@ def get_min_lap_no(data):
         min_lap = min(min_lap, b[BOSS_LAP_NO_KEY])
 
     return min_lap
+
+# 周から段階を取得
+def get_phase(data, lap_no):
+    l = data[DATA_CONFIG_KEY][CONFIG_PHASE_KEY]
+
+    for i in range(0, len(l)):
+        if lap_no < l[i]:
+            return i
+
+    return len(l)
+
+# 凸可能な周の最大値を算出
+def get_max_attack_lap_no(data):
+    l = data[DATA_CONFIG_KEY][CONFIG_PHASE_KEY]
+
+    min_lap = get_min_lap_no(data)
+    phase = get_phase(data, min_lap)
+
+    if phase == len(l):
+        return min_lap+1
+    
+    return min(min_lap+1, l[phase]-1)
+
 
 
 #日次予約情報を初期化
