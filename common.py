@@ -1,4 +1,4 @@
-from os import stat_result
+import os
 import json
 import datetime
 
@@ -29,6 +29,7 @@ DATA_MEMBER_KEY = 'member'
 DATA_BOSS_KEY = 'boss'
 DATA_DAILY_KEY = 'daily'
 
+DATA_LOCK_PATH = 'data/lock.loc'
 DATA_CONFIG_PATH = 'config/config.txt'
 DATA_SERVER_PATH = 'data/server.txt'
 DATA_MEMBER_PATH = 'data/member.txt'
@@ -424,4 +425,13 @@ def save_daily(daily):
     fp.close()
 
     return
+
+# ロックファイルを生成 失敗した場合はエラー
+def create_lock():
+    fp = open(DATA_LOCK_PATH, 'x', encoding="utf-8")
+    fp.close()
+
+# ロックファイルを削除
+def delete_lock():
+    os.remove(DATA_LOCK_PATH)
 

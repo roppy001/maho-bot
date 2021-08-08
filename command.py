@@ -46,7 +46,26 @@ async def on_ready():
 
 # 発言時に実行されるイベントハンドラを定義
 @client.event
-async def on_message(message):
+async def on_message(message):    
+    # .で始まらない場合はコマンドではないので無視する
+    if not message.content.startswith('.') :
+        return
+
+    try:
+        common.create_lock()
+    except:
+        await common.reply_author(message, messages.error_lock)
+        return
+    
+    try:
+        await command_main(message)
+    finally:
+        common.delete_lock()
+    
+    return
+
+
+async def command_main(message):
     # await message.guild.leave()
     # return 
 
@@ -57,10 +76,6 @@ async def on_message(message):
     data[common.DATA_CONFIG_KEY] = common.load_config()
     
     data[common.DATA_SERVER_KEY] = common.load_server_settings()
-
-    # .で始まらない場合はコマンドではないので無視する
-    if not message.content.startswith('.') :
-        return
 
     # コマンド入力チャンネルではない場合は無視する
     if message.channel.id != data[common.DATA_SERVER_KEY][common.SERVER_COMMAND_CHANNEL_KEY] :
