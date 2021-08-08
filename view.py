@@ -41,7 +41,7 @@ async def display_reservation(data, message):
         for boss_id in range(0, common.BOSS_MAX):
             b = boss[boss_id]
             edit_str += f'● {b[common.BOSS_NAME_KEY]} \n'
-            edit_str += await get_reservation_str(data, message, dic, l, boss_id)
+            edit_str += await get_reservation_str(data, message, dic, 0, boss_id)
         edit_str += '\n'
 
     await message.edit(content = edit_str)
