@@ -16,26 +16,31 @@ async def display_reservation(data, message):
         if not str(l) in dic and l >= min_lap + 2:
             continue
 
-        edit_str += f'■{l}周目\n'
+        edit_str += f'**■{l}周目**\n'
         for boss_id in range(0, common.BOSS_MAX):
             b = boss[boss_id]
             if l < b[common.BOSS_LAP_NO_KEY] or (l == b[common.BOSS_LAP_NO_KEY] and b[common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED):
-                edit_str += f'{b[common.BOSS_NAME_KEY]} 討伐済\n'
+                edit_str += f'~~● {b[common.BOSS_NAME_KEY]} 討伐済~~\n'
             elif l == b[common.BOSS_LAP_NO_KEY]:
-                edit_str += f'{b[common.BOSS_NAME_KEY]} {b[common.BOSS_HP_KEY]}/{b[common.BOSS_MAX_HP_KEY]}\n'
+                if b[common.BOSS_HP_KEY] > common.get_hp_sum(dic, l, boss_id):
+                    h = '\N{LARGE GREEN CIRCLE}'
+                else:
+                    h = '\N{LARGE ORANGE CIRCLE}'
+
+                edit_str += f'{h} {b[common.BOSS_NAME_KEY]} {b[common.BOSS_HP_KEY]}/{b[common.BOSS_MAX_HP_KEY]}\n'
                 edit_str += await get_reservation_str(data, message, dic, l, boss_id)
             else:
-                edit_str += f'{b[common.BOSS_NAME_KEY]} 未登場\n'
+                edit_str += f'\N{LARGE BLUE CIRCLE} {b[common.BOSS_NAME_KEY]} 未登場\n'
                 edit_str += await get_reservation_str(data, message, dic, l, boss_id)
 
         edit_str += f'\n'
 
     # 周未指定予約の表示
     if '0' in dic:
-        edit_str += '■周未指定予約\n'
+        edit_str += '**■周未指定予約**\n'
         for boss_id in range(0, common.BOSS_MAX):
             b = boss[boss_id]
-            edit_str += f'{b[common.BOSS_NAME_KEY]} \n'
+            edit_str += f'● {b[common.BOSS_NAME_KEY]} \n'
             edit_str += await get_reservation_str(data, message, dic, l, boss_id)
         edit_str += '\n'
 

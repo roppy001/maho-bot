@@ -68,9 +68,9 @@ DAILY_ATTACK_STATUS_NONE = 0
 DAILY_ATTACK_STATUS_CARRY_OVER = 1
 DAILY_ATTACK_STATUS_DONE = 2 
 
-DAILY_RESERVE_STATUS_NONE = 0 
-DAILY_RESERVE_STATUS_RESERVED = 1
-DAILY_RESERVE_STATUS_DONE = 2 
+RESERVE_STATUS_NONE = 0 
+RESERVE_STATUS_RESERVED = 1
+RESERVE_STATUS_DONE = 2 
 
 SERVER_GUILD_ID_KEY = 'guild_id'
 SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
@@ -297,20 +297,21 @@ def generate_reservation_dict(data):
                 for j in range(0, len(res_list[i])):
                     res = res_list[i][j]
 
-                    new_res = dict(res)
-                    new_res[RESERVATION_ID_KEY] = member_id
-                    new_res[RESERVATION_SEQ_KEY] = i
-                    new_res[RESERVATION_BRANCH_KEY] = j
+                    if res[RESERVATION_STATUS_KEY] == RESERVE_STATUS_RESERVED:
+                        new_res = dict(res)
+                        new_res[RESERVATION_ID_KEY] = member_id
+                        new_res[RESERVATION_SEQ_KEY] = i
+                        new_res[RESERVATION_BRANCH_KEY] = j
 
-                    lap_no = new_res[RESERVATION_LAP_NO_KEY]
-                    lap_key = str(lap_no)
+                        lap_no = new_res[RESERVATION_LAP_NO_KEY]
+                        lap_key = str(lap_no)
 
-                    if not lap_key in dic:
-                        dic[lap_key] = []
-                        for k in range(0,BOSS_MAX):
-                            dic[lap_key].append([])
+                        if not lap_key in dic:
+                            dic[lap_key] = []
+                            for k in range(0,BOSS_MAX):
+                                dic[lap_key].append([])
 
-                    dic[lap_key][new_res[RESERVATION_BOSS_ID_KEY]].append(new_res)
+                        dic[lap_key][new_res[RESERVATION_BOSS_ID_KEY]].append(new_res)
 
     # 各辞書のエントリを時刻順に並び替える
     for key in dic:
@@ -318,6 +319,21 @@ def generate_reservation_dict(data):
             dic[lap_key][new_res[RESERVATION_BOSS_ID_KEY]].sort(key = datetime_compare)
 
     return dic
+
+# 現在の予約の合計数を算出
+def get_hp_sum(dic, lap_no, boss_id):
+    lap_key = str(lap_no)
+
+    if lap_key in dic:
+        s=0
+
+        for r in dic[lap_key][boss_id]:
+            s += r[RESERVATION_DAMAGE_KEY]
+
+        return s
+    else:
+        return 0
+
 
 # DISCORDサーバ設定を読み込む
 def load_server_settings():
