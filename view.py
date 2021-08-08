@@ -35,6 +35,7 @@ async def display_reservation(data, message):
         edit_str += '■周未指定予約\n'
         for boss_id in range(0, common.BOSS_MAX):
             b = boss[boss_id]
+            edit_str += f'{b[common.BOSS_NAME_KEY]} \n'
             edit_str += await get_reservation_str(data, message, dic, l, boss_id)
         edit_str += '\n'
 
