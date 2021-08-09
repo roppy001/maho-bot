@@ -69,6 +69,8 @@ async def mb(message, data, command_args, mention_ids):
         if lap_no == 0:
             raise common.CommandError(messages.error_lap_no)
 
+        phase = common.get_phase(data, lap_no)
+        data[common.DATA_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY] = data[common.DATA_CONFIG_KEY][common.CONFIG_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY][phase]
         if len(command_args) == 3:
             hp = data[common.DATA_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY]
         else:
