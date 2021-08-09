@@ -85,6 +85,8 @@ SERVER_REST_DETAIL_MESSAGE_KEY = 'rest_detail_message'
 
 MEMBER_ID_KEY = 'id'
 
+STATUS_LIST = ['000', '100', '110', '111', '112', '120', '121', '122', '200', '210', '211', '212', '220', '221', '222']
+
 async def reply_author(message, str):
     reply = f'{message.author.mention} {str}'
     await message.channel.send(reply)
@@ -200,6 +202,23 @@ def convert_cancel_attack_no(str):
             return (convert_attack_no(str), ATTACK_CARRY_OVER)
     except CommandError:
         raise CommandError(messages.error_cancel_attack_no)
+
+def convert_status(str):
+    st = str.replace('０','0').replace('１','1').replace('２','2').strip()
+
+    if not st in STATUS_LIST:
+        raise CommandError(messages.error_status)
+
+    result = []
+    for s in st:
+        if s == '0':
+            result.append(DAILY_ATTACK_STATUS_NONE)
+        elif s == '1':
+            result.append(DAILY_ATTACK_STATUS_CARRY_OVER)
+        else:
+            result.append(DAILY_ATTACK_STATUS_DONE)
+        
+    return result
 
 def check_registered_member(data, id):
     for m in data[DATA_MEMBER_KEY]:

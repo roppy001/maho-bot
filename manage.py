@@ -52,10 +52,16 @@ async def remove(message, data, command_args, mention_ids):
 
     return (True,'')
 
+async def mb(message, data, command_args, mention_ids):
+    msg = ''
+
+    return (True,msg)
+
+
 async def kickbot(message, data, command_args, mention_ids):
     if len(command_args) != 1:
         raise common.CommandError(messages.error_args)
         
     await message.guild.leave()
-    return
+    return (True,'')
 

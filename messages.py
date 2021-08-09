@@ -1,6 +1,7 @@
 # 単語
 word_atk_branch = ['本凸','持越']
 word_atk_index = '凸目'
+word_atk_status = ['未凸','持越','凸済']
 word_name_unknown = '(不明)'
 
 # お知らせ文言
@@ -8,6 +9,7 @@ msg_new_daily = '日付変わり、予約情報初期化されたで'
 msg_reserve_success = 'として登録されたで'
 msg_fin_success = 'として完了登録されたで'
 msg_la_success = 'として討伐登録されたで'
+msg_ms_success = 'に変更したで'
 
 # エラー文言
 error_lock = '他のコマンド処理を実行中どす　メッセージ続く場合はロックファイルを削除しとぉくれやす'
@@ -22,6 +24,7 @@ error_cmd_none = '正しいコマンドを入力しとぉくれやす'
 error_multi_mention = '複数のメンション付けられてます'
 error_init_member = '初回起動もしくは設定読込の失敗のため、クラメン情報が初期化されました'
 error_not_member = 'クラメンとして登録されてないメンバです'
+error_status = 'ステータスは000～222の中から選んでください 0:未凸 1:持越 2:凸済'
 
 error_boss_no_with_lap_no = 'ボス番号は ボス番号(1～5) もしくは ボス番号+ もしくは ボス番号@周(1～180) で指定しとぉくれやす'
 error_damage_with_attack_no = 'ダメージは ダメージ もしくは ダメージm もしくは ダメージm1～3 で指定しとぉくれやす'
@@ -50,4 +53,6 @@ cmd_la_arg = '.la ボス番号 持ち越し秒数 or m[何凸目か]\n(例: .la 
 cmd_cancel_arg = '.cl ボス番号[@周 or +] [何凸目か or m[何凸目か]]号\n(例: .cl 5 3)'
 cmd_add_arg = '.add (追加したいメンバをメンション) \n(例: .add @マホ )'
 cmd_remove_arg = '.remove (追加したいメンバをメンション) \n(例: .remove @マホ )'
+cmd_ms_arg = '.ms 000～222 \n(例: .ms 000 )'
+cmd_mb_arg = '.mb ボス番号 周[+] [HP] \n(例: .mb 3 10+ )'
 

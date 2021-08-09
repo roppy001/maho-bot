@@ -14,6 +14,7 @@ import reserve
 import fin
 import la
 import cancel
+import ms
 import manage
 import view
 
@@ -27,8 +28,10 @@ COMMAND_LIST = [
     (['.finish', '.fin', '.完了'], fin.fin),
     (['.lastattack', '.la', '.討伐'], la.la),
     (['.cancel', '.cl', '.取消'], cancel.cancel),
+    (['.modifystatus', '.ms', '.ステータス変更'], ms.ms),
     (['.add', '.追加'], manage.add),
     (['.remove', '.削除'], manage.remove),
+    (['.modifyboss', '.mb', '.ボス変更'], manage.mb),
     (['.kickbot'], manage.kickbot)
     ]
 
