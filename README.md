@@ -68,26 +68,55 @@
 .ms 1 1 ⇒ 1ボスの周を1に変更して、HPをMAXにする
 .ms 1 3 300⇒ 1ボスの周を13に変更して、残りHPを300万にする
 
-
-
 ~~~
 
 
 
-# 導入方法(仮)
-※不要な手順もあるかもしれないが、自分は下記でうまく行ったのでひとまず掲載
+# 前提
+各クランにてbot動作用のPC／サーバがあること (windows/linux どちらも可)
+
+# 導入方法
 
 1. python 3.8 以降の最新版をインストール
-2. 以下のコマンドを打つ
+
+2. discord.pyを導入
 ~~~
+以下のサイトなどを参考に導入する
+https://discordpy.readthedocs.io/ja/latest/intro.html
+
+linux:
+python3 -m pip install -U discord.py
+windows:
 py -3 -m pip install -U discord
-
-python3 -m venv env
-
-env\Scripts\activate.bat
-pip install -U discord
 ~~~
-3. run.batを実行
+
+3. BOTアカウントを作成
+~~~
+"discord 自作 bot 導入" で検索するとわかりやすい手順が沢山あるのでそれらを参考にするとよい
+
+discord Developer用サイトは以下
+https://discord.com/developers/applications
+
+Applicationを作成後、settings > botの画面でbuild a botを選び、TOKENの内容をコピー控えておく
+settings > OAuth2 の OAuth2 URL Generatorを用いてURLを生成しておく
+SCOPESには"bot"、BOT PERMISSIONSには"Administrator"を選択し、URLを作成。この内容も控えておく
+
+~~~
+
+4. 環境変数にトークンを設定
+~~~
+環境BOT_TOKEN
+
+~~~
+5. 実行
+~~~
+
+linux:
+./run.sh
+
+windows:
+run.bat
+~~~
 
 
 動作環境
