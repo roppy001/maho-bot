@@ -46,6 +46,8 @@ def la(data, command_args, mention_ids):
         current_lap_no = data[common.DATA_BOSS_KEY][boss_id][common.BOSS_LAP_NO_KEY]
         current_lap_key = str(current_lap_no)
 
+        min_lap_no = common.get_min_lap_no(data)
+
         dic = common.generate_reservation_dict(data)
 
         # コマンドから本凸か持越しかを判定
@@ -215,12 +217,12 @@ def la(data, command_args, mention_ids):
         # 全ボスが討伐済もしくは次の周に移っている場合は、次の周に移る
         flg = True
         for b in boss:
-            if b[common.BOSS_STATUS_KEY] == common.BOSS_STATUS_ALIVE and b[common.BOSS_LAP_NO_KEY] == current_lap_no:
+            if b[common.BOSS_STATUS_KEY] == common.BOSS_STATUS_ALIVE and b[common.BOSS_LAP_NO_KEY] == min_lap_no:
                 flg = False
         
         if flg:
             for i in range(0, len(boss)):
-                if boss[i][common.BOSS_LAP_NO_KEY] == current_lap_no:
+                if boss[i][common.BOSS_LAP_NO_KEY] == min_lap_no:
                     boss[i][common.BOSS_LAP_NO_KEY] += 1
                     boss[i][common.BOSS_STATUS_KEY] = common.BOSS_STATUS_ALIVE 
                     phase = common.get_phase(data, boss[i][common.BOSS_LAP_NO_KEY])
