@@ -248,7 +248,7 @@ async def la(message, data, command_args, mention_ids):
 
         common.save_daily(data[common.DATA_DAILY_KEY])
 
-        msg = str(msg_atk_index +1) + messages.word_atk_index + messages.word_atk_branch[msg_atk_branch] + messages.msg_fin_success
+        msg = str(msg_atk_index +1) + messages.word_atk_index + messages.word_atk_branch[msg_atk_branch] + messages.msg_la_success
 
     except common.CommandError as ce: 
         raise common.CommandError(ce.args[0] + '\n' + messages.cmd_la_arg)
