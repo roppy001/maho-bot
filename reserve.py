@@ -3,7 +3,7 @@ import datetime
 import messages
 import common
 
-def reserve(data, command_args, mention_ids):
+async def reserve(message, data, command_args, mention_ids):
     msg = ''
 
     try : 

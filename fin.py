@@ -3,7 +3,7 @@ import datetime
 import messages
 import common
 
-def fin(data, command_args, mention_ids):
+async def fin(message, data, command_args, mention_ids):
     msg = ''
 
     try : 

@@ -1,7 +1,7 @@
 import messages
 import common
 
-def cancel(data, command_args, mention_ids):
+async def cancel(message, data, command_args, mention_ids):
     try : 
         if len(command_args) != 3 :
             raise common.CommandError(messages.error_args)

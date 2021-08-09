@@ -2,7 +2,7 @@ import messages
 import common
 
 
-def add(data, command_args, mention_ids):
+async def add(message, data, command_args, mention_ids):
     try: 
         if len(command_args) != 1:
             raise common.CommandError(messages.error_args)
@@ -28,7 +28,7 @@ def add(data, command_args, mention_ids):
 
     return (True,'')
 
-def remove(data, command_args, mention_ids):
+async def remove(message, data, command_args, mention_ids):
     try: 
         if len(command_args) != 1:
             raise common.CommandError(messages.error_args)
@@ -51,3 +51,11 @@ def remove(data, command_args, mention_ids):
         raise common.CommandError(ce.args[0] + '\n' + messages.cmd_remove_arg)
 
     return (True,'')
+
+async def kickbot(message, data, command_args, mention_ids):
+    if len(command_args) != 1:
+        raise common.CommandError(messages.error_args)
+        
+    await message.guild.leave()
+    return
+

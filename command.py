@@ -14,7 +14,7 @@ import reserve
 import fin
 import la
 import cancel
-import member
+import manage
 import view
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
@@ -27,8 +27,9 @@ COMMAND_LIST = [
     (['.finish', '.fin', '.完了'], fin.fin),
     (['.lastattack', '.la', '.討伐'], la.la),
     (['.cancel', '.cl', '.取消'], cancel.cancel),
-    (['.add', '.追加'], member.add),
-    (['.remove', '.削除'], member.remove)
+    (['.add', '.追加'], manage.add),
+    (['.remove', '.削除'], manage.remove),
+    (['.kickbot'], manage.kickbot)
     ]
 
 # ボス周変更コマンド
@@ -66,9 +67,6 @@ async def on_message(message):
 
 
 async def command_main(message):
-    # await message.guild.leave()
-    # return 
-
     data = dict()
 
     await recreate_channels_if_not_exist(data, message.guild)
@@ -136,7 +134,7 @@ async def command_main(message):
         flg = True
         for c in COMMAND_LIST :
             if command_args[0] in c[0] :
-                ref = c[1](data, command_args, mention_ids)
+                ref = await c[1](message, data, command_args, mention_ids)
                 await message.add_reaction(ok_hand)
                 flg = False
                 break

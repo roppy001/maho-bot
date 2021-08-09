@@ -29,7 +29,7 @@ async def display_reservation(data, message):
                 else:
                     h = '\N{LARGE ORANGE CIRCLE}'
 
-                edit_str += f'{h} {b[common.BOSS_NAME_KEY]} {b[common.BOSS_HP_KEY]}/{b[common.BOSS_MAX_HP_KEY]}\n'
+                edit_str += f'{h} {b[common.BOSS_NAME_KEY]} {b[common.BOSS_HP_KEY]}万/{b[common.BOSS_MAX_HP_KEY]}万\n'
                 edit_str += await get_reservation_str(data, message, dic, l, boss_id)
             else:
                 edit_str += f'\N{LARGE BLUE CIRCLE} {b[common.BOSS_NAME_KEY]} 未登場\n'

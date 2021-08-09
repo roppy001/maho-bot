@@ -3,7 +3,7 @@ import datetime
 import messages
 import common
 
-def la(data, command_args, mention_ids):
+async def la(message, data, command_args, mention_ids):
     msg = ''
 
     try: 
