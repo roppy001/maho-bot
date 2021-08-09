@@ -61,7 +61,7 @@
 .remove @あああ @いいい ⇒ あああといいいが脱退
 
 ■bot鯖脱退コマンド
-.leave ⇒ botがdiscord鯖から抜ける
+.kickbot ⇒ botがdiscord鯖から抜ける
 
 ■ボス状態変更コマンド
 .ms ボス番号 周 [HP]
