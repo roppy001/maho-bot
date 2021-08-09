@@ -53,9 +53,57 @@ async def remove(message, data, command_args, mention_ids):
     return (True,'')
 
 async def mb(message, data, command_args, mention_ids):
-    msg = ''
+    try : 
+        if not len(command_args) in [3, 4] :
+            raise common.CommandError(messages.error_args)
 
-    return (True,msg)
+        target_id = common.get_target_id(mention_ids)
+
+        boss_id = common.convert_boss_no(command_args[1])
+
+        da = common.convert_lap_no_with_status(command_args[2])
+
+        lap_no = da[0]
+        boss_status = da[1]
+
+        if lap_no == 0:
+            raise common.CommandError(messages.error_lap_no)
+
+        if len(command_args) == 3:
+            hp = data[common.DATA_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY]
+        else:
+            hp = common.convert_damage(command_args[3])
+
+        # クラメンとして登録済みかをチェック
+        common.check_registered_member(data, target_id)
+
+        # ボスの状態を変更
+        data[common.DATA_BOSS_KEY][boss_id][common.BOSS_LAP_NO_KEY] = lap_no
+        data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] = boss_status
+        data[common.DATA_BOSS_KEY][boss_id][common.BOSS_HP_KEY] = hp
+
+        # 指定の周までの予約を周未指定予約に変更
+        daily = data[common.DATA_DAILY_KEY]
+
+        for key in daily[common.DAILY_MEMBER_KEY]:
+            res_list = daily[common.DAILY_MEMBER_KEY][key][common.DAILY_MEMBER_RESERVATION_KEY]
+            for i in range(0, len(res_list)):
+                for j in range(0, len(res_list[i])):
+                    r = res_list[i][j]
+                    l = r[common.RESERVATION_LAP_NO_KEY]
+                    bi = r[common.RESERVATION_BOSS_ID_KEY]
+                    if boss_id == bi and ((l > 0 and l < lap_no) or (l == lap_no and boss_status == common.BOSS_STATUS_DEFEATED)):
+                        daily[common.DAILY_MEMBER_KEY][key][common.DAILY_MEMBER_RESERVATION_KEY][i][j][common.RESERVATION_LAP_NO_KEY] = 0
+        
+        common.save_boss(data[common.DATA_BOSS_KEY])
+
+        data[common.DATA_DAILY_KEY] = daily
+
+        common.save_daily(daily)
+    except common.CommandError as ce: 
+        raise common.CommandError(ce.args[0] + '\n' + messages.cmd_mb_arg)
+
+    return (True, '')
 
 
 async def kickbot(message, data, command_args, mention_ids):

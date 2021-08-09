@@ -220,6 +220,15 @@ def convert_status(str):
         
     return result
 
+def convert_lap_no_with_status(str):
+    try:
+        if str.endswith('+'):
+            return (convert_lap_no(str[:len(str)-1]), BOSS_STATUS_DEFEATED)
+        
+        return (convert_lap_no(str), BOSS_STATUS_ALIVE)
+    except CommandError:
+        raise CommandError(messages.error_lap_no_with_status)
+
 def check_registered_member(data, id):
     for m in data[DATA_MEMBER_KEY]:
         if id == m[MEMBER_ID_KEY]:

@@ -30,6 +30,7 @@ error_boss_no_with_lap_no = 'ボス番号は ボス番号(1～5) もしくは �
 error_damage_with_attack_no = 'ダメージは ダメージ もしくは ダメージm もしくは ダメージm1～3 で指定しとぉくれやす'
 error_carry_over_with_attack_no = '持ち越しは 持ち越し秒数 もしくは m もしくは m1～3 で指定しとぉくれやす'
 error_cancel_attack_no = '対象は 1～3 もしくは m1～3 で指定しとぉくれやす'
+error_lap_no_with_status = '周番号は 周番号(1～180) もしくは 周番号+ で指定しとぉくれやす'
 
 error_reserve_limit_lap_no = '予約可能な範囲を超えてます'
 error_reserve_full = 'これ以上予約できしまへん'
