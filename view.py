@@ -68,7 +68,7 @@ async def get_reservation_str(data, message, dic, lap_no, boss_id):
         else:
             name = messages.word_name_unknown
 
-        s += f'　{res[common.RESERVATION_DAMAGE_KEY]} {name} {res[common.RESERVATION_COMMENT_KEY]} {res[common.RESERVATION_SEQ_KEY]+1}{messages.word_atk_index}{messages.word_atk_branch[res[common.RESERVATION_BRANCH_KEY]]}\n'
+        s += f'　{res[common.RESERVATION_DAMAGE_KEY]}万 {name} {res[common.RESERVATION_COMMENT_KEY]} {res[common.RESERVATION_SEQ_KEY]+1}{messages.word_atk_index}{messages.word_atk_branch[res[common.RESERVATION_BRANCH_KEY]]}\n'
 
     return s
 
