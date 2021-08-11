@@ -31,6 +31,7 @@ DATA_DAILY_KEY = 'daily'
 
 DATA_LOCK_PATH = 'data/lock.loc'
 DATA_CONFIG_PATH = 'config/config.txt'
+DATA_HELP_PATH = 'config/help.txt'
 DATA_SERVER_PATH = 'data/server.txt'
 DATA_MEMBER_PATH = 'data/member.txt'
 DATA_BOSS_PATH = 'data/boss.txt'
@@ -39,6 +40,7 @@ DATA_DAILY_PATH = 'data/daily.txt'
 CONFIG_PHASE_KEY = 'phase'
 CONFIG_BOSS_KEY = 'boss'
 CONFIG_RESERVATION_LIMIT_KEY = 'reservation_limit'
+CONFIG_DEPUTY_LIMITED_KEY = 'deputy_limited'
 CONFIG_INVALID_RESERVATION_MOVE_NEXT = 'invalid_reservation_move_next'
 
 BOSS_NAME_KEY = 'name'
@@ -79,9 +81,12 @@ SERVER_CATEGORY_CHANNEL_KEY = 'category_channel'
 SERVER_COMMAND_CHANNEL_KEY = 'command_channel'
 SERVER_RESERVATION_CHANNEL_KEY = 'reservation_channel'
 SERVER_REST_DETAIL_CHANNEL_KEY = 'rest_detail_channel'
+SERVER_ADMIN_COMMAND_CHANNEL_KEY = 'admin_command_channel'
+SERVER_HELP_CHANNEL_KEY = 'rest_help_channel'
 
 SERVER_RESERVATION_MESSAGE_KEY = 'reservation_message'
 SERVER_REST_DETAIL_MESSAGE_KEY = 'rest_detail_message'
+SERVER_HELP_MESSAGE_KEY = 'help_message'
 
 MEMBER_ID_KEY = 'id'
 
@@ -487,3 +492,12 @@ def create_lock():
 def delete_lock():
     os.remove(DATA_LOCK_PATH)
 
+# ヘルプを読み込む
+def load_help():
+    fp = open(DATA_HELP_PATH, 'r', encoding="utf-8")
+
+    help_str = fp.read()
+
+    fp.close()
+
+    return help_str

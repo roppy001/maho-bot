@@ -10,6 +10,7 @@ msg_reserve_success = 'として登録されたで'
 msg_fin_success = 'として完了登録されたで'
 msg_la_success = 'として討伐登録されたで'
 msg_ms_success = 'に変更したで'
+msg_shutdown_success = 'ほな、さいなら'
 
 # エラー文言
 error_lock = '他のコマンド処理を実行中どす　メッセージ続く場合はロックファイルを削除しとぉくれやす'
@@ -25,6 +26,8 @@ error_multi_mention = '複数のメンション付けられてます'
 error_init_member = '初回起動もしくは設定読込の失敗のため、クラメン情報が初期化されました'
 error_not_member = 'クラメンとして登録されてないメンバです'
 error_status = 'ステータスは000～222の中から選んでください 0:未凸 1:持越 2:凸済'
+error_mention_limited = '代行入力は管理コマンド入力チャンネルからのみ入力可能どす'
+error_command_limited = '管理コマンド入力チャンネルから実行しとぉくれやす'
 
 error_boss_no_with_lap_no = 'ボス番号は ボス番号(1～5) もしくは ボス番号+ もしくは ボス番号@周(1～180) で指定しとぉくれやす'
 error_damage_with_attack_no = 'ダメージは ダメージ もしくは ダメージm もしくは ダメージm1～3 で指定しとぉくれやす'

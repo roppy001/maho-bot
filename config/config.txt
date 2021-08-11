@@ -1,6 +1,7 @@
 {
 	"phase" : [4,11,31,41],
 	"reservation_limit" : 2,
+	"deputy_limited" : true,
 	"invalid_reservation_move_next" : true,
 	"boss" : [
 		{
