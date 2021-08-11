@@ -231,6 +231,7 @@ async def la(message, data, command_args, mention_ids):
                     boss[i][common.BOSS_HP_KEY] = boss[i][common.BOSS_MAX_HP_KEY]
 
         # ステータスが討伐済みで、次の周が討伐可能な場合は次の周に移る
+        data[common.DATA_BOSS_KEY] = boss
         max_lap_no = common.get_max_attack_lap_no(data)
 
         for i in range(0, len(boss)):

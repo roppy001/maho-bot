@@ -18,28 +18,34 @@ import ms
 import manage
 import view
 
+client = discord.Client()
+
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
-ok_hand = '\N{OK HAND SIGN}'
+OK_HAND = '\N{OK HAND SIGN}'
+
+async def shutdown(message , data, command_args, mention_ids):
+    await common.reply_author(message, messages.msg_shutdown_success)
+    await client.logout()
+    return (True,'')
 
 ## コマンド
 COMMAND_LIST = [
-    (['.reserve', '.re', '.予約'], reserve.reserve),
-    (['.finish', '.fin', '.完了'], fin.fin),
-    (['.lastattack', '.la', '.討伐'], la.la),
-    (['.cancel', '.cl', '.取消'], cancel.cancel),
-    (['.modifystatus', '.ms', '.ステータス変更'], ms.ms),
-    (['.add', '.追加'], manage.add),
-    (['.remove', '.削除'], manage.remove),
-    (['.modifyboss', '.mb', '.ボス変更'], manage.mb),
-    (['.kickbot'], manage.kickbot)
+    (['.reserve', '.re', '.予約'], reserve.reserve, True),
+    (['.finish', '.fin', '.完了'], fin.fin, True),
+    (['.lastattack', '.la', '.討伐'], la.la, True),
+    (['.cancel', '.cl', '.取消'], cancel.cancel, True),
+    (['.modifystatus', '.ms', '.ステータス変更'], ms.ms, True),
+    (['.add', '.追加'], manage.add, False),
+    (['.remove', '.削除'], manage.remove, False),
+    (['.modifyboss', '.mb', '.ボス変更'], manage.mb, False),
+    (['.shutdown'], shutdown, False),
+    (['.kickbot'], manage.kickbot, False)
     ]
 
 # ボス周変更コマンド
 # modifyboss_cmd_list = ['.modifyboss']
 # cancelboss_cmd_list = ['.cancelboss']
-
-client = discord.Client()
 
 # 起動時に動作する処理
 @client.event
@@ -79,7 +85,7 @@ async def command_main(message):
     data[common.DATA_SERVER_KEY] = common.load_server_settings()
 
     # コマンド入力チャンネルではない場合は無視する
-    if message.channel.id != data[common.DATA_SERVER_KEY][common.SERVER_COMMAND_CHANNEL_KEY] :
+    if not message.channel.id in [data[common.DATA_SERVER_KEY][common.SERVER_COMMAND_CHANNEL_KEY], data[common.DATA_SERVER_KEY][common.SERVER_ADMIN_COMMAND_CHANNEL_KEY]]:
         return
 
     # メンバ情報を取得
@@ -113,7 +119,10 @@ async def command_main(message):
     mention_re = re.compile('<@!\d+>')
     mention_ids = [int(s[3: len(s)-1]) for s in mention_re.findall(message.content)]
 
-    print(mention_ids)
+    if len(mention_ids) > 0 and (message.channel.id != data[common.DATA_SERVER_KEY][common.SERVER_ADMIN_COMMAND_CHANNEL_KEY]) and data[common.DATA_CONFIG_KEY][common.CONFIG_DEPUTY_LIMITED_KEY]:
+        await common.reply_author(message, messages.error_mention_limited)
+        return 
+
 
     mention_match = mention_re.search(message.content)
     if mention_match:
@@ -137,8 +146,11 @@ async def command_main(message):
         flg = True
         for c in COMMAND_LIST :
             if command_args[0] in c[0] :
+                if (not c[2]) and (message.channel.id != data[common.DATA_SERVER_KEY][common.SERVER_ADMIN_COMMAND_CHANNEL_KEY]):
+                    raise common.CommandError(messages.error_command_limited)
+
                 ref = await c[1](message, data, command_args, mention_ids)
-                await message.add_reaction(ok_hand)
+                await message.add_reaction(OK_HAND)
                 flg = False
                 break
         
@@ -153,6 +165,8 @@ async def command_main(message):
     reservation_message = await fetch_reservation_message(data, message.guild)
 
     rest_detail_message = await fetch_rest_detail_message(data, message.guild)
+
+    await set_help_message(data, message.guild)
 
     if ref[0]:
         await view.display_reservation(data, reservation_message)
@@ -171,17 +185,21 @@ async def on_guild_join(guild):
 
 # bot用のチャンネルを生成
 async def create_bot_channels(data, guild):
-    category_channel    = await guild.create_category_channel('マホBOT')
-    command_channel     = await guild.create_text_channel('コマンド入力',category = category_channel )
-    reservation_channel = await guild.create_text_channel('予約状況表示',category = category_channel )
-    rest_detail_channel = await guild.create_text_channel('残凸状況表示',category = category_channel )
+    category_channel      = await guild.create_category_channel('マホBOT')
+    command_channel       = await guild.create_text_channel('コマンド入力',category = category_channel )
+    admin_command_channel = await guild.create_text_channel('管理コマンド入力',category = category_channel )
+    reservation_channel   = await guild.create_text_channel('予約状況表示',category = category_channel )
+    rest_detail_channel   = await guild.create_text_channel('残凸状況表示',category = category_channel )
+    help_channel          = await guild.create_text_channel('コマンドヘルプ',category = category_channel )
 
     server_setting = {
         common.SERVER_GUILD_ID_KEY : guild.id,
         common.SERVER_CATEGORY_CHANNEL_KEY : category_channel.id,
         common.SERVER_COMMAND_CHANNEL_KEY : command_channel.id,
+        common.SERVER_ADMIN_COMMAND_CHANNEL_KEY : admin_command_channel.id,
         common.SERVER_RESERVATION_CHANNEL_KEY : reservation_channel.id,
-        common.SERVER_REST_DETAIL_CHANNEL_KEY : rest_detail_channel.id
+        common.SERVER_REST_DETAIL_CHANNEL_KEY : rest_detail_channel.id,
+        common.SERVER_HELP_CHANNEL_KEY : help_channel.id
     }
 
     data[common.DATA_SERVER_KEY] = server_setting
@@ -247,12 +265,30 @@ async def fetch_rest_detail_message(data, guild):
 
     return message
 
-# 60秒に一回ループ
-#@tasks.loop(seconds=60)
-#async def loop():
+# ヘルプメッセージを取得
+async def set_help_message(data, guild):
+    server = data[common.DATA_SERVER_KEY]
 
-#ループ処理実行
-#loop.start()
+    channel = guild.get_channel(server[common.SERVER_HELP_CHANNEL_KEY])
+
+    if (not common.SERVER_HELP_MESSAGE_KEY in server):
+        message = await channel.send(common.load_help())
+        message_id = message.id
+        server[common.SERVER_HELP_MESSAGE_KEY] = message_id
+        common.save_server_settings(server)
+
+    message_id = server[common.SERVER_HELP_MESSAGE_KEY]
+    message = channel.get_partial_message(message_id)
+
+    try:
+        message = await message.fetch()
+    except discord.NotFound:
+        message = await channel.send(common.load_help())
+        message_id = message.id
+        server[common.SERVER_HELP_MESSAGE_KEY] = message_id
+        common.save_server_settings(server)
+
+    return message
 
 # Botの起動とDiscordサーバーへの接続
 client.run(BOT_TOKEN)
