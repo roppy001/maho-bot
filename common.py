@@ -340,7 +340,7 @@ def generate_reservation_dict(data):
     dic = {}
 
     # 登録メンバのみを抽出
-    member_list = data[DAILY_MEMBER_KEY]
+    member_list = data[DATA_MEMBER_KEY]
 
     for m in member_list:
         member_id = m[MEMBER_ID_KEY]

@@ -73,6 +73,40 @@ async def get_reservation_str(data, message, dic, lap_no, boss_id):
     return s
 
 async def display_rest_detail(data, message):
-    await message.edit(content = 'ざんとつ　編集')
+    msg = ''
+
+    # 登録メンバのみを抽出
+    member_list = data[common.DATA_MEMBER_KEY]
+
+    for m in member_list:
+        member_id = m[common.MEMBER_ID_KEY]
+        member_key = str(member_id)
+
+        daily_member = data[common.DATA_DAILY_KEY][common.DAILY_MEMBER_KEY]
+
+        if member_key in daily_member:
+            atk = daily_member[member_key][common.DAILY_MEMBER_ATTACK_KEY]
+        else:
+            atk = []
+            for i in range(0, common.ATTACK_MAX):
+                f = {}
+                f[common.DAILY_MEMBER_ATTACK_STATUS_KEY] = common.DAILY_ATTACK_STATUS_NONE
+                f[common.DAILY_MEMBER_ATTACK_CARRY_OVER_KEY] = 0
+                atk.append(f)
+
+        for i in range(0, len(atk)):
+            msg += f'{messages.word_atk_status_mark[atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY]]} '
+
+        u = await message.guild.fetch_member(member_id)
+
+        if u:
+            name = u.name
+        else:
+            name = messages.word_name_unknown
+        msg += name 
+
+        msg += '\n'
+
+    await message.edit(content = msg)
 
     return
