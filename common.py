@@ -399,6 +399,40 @@ def get_hp_sum(dic, lap_no, boss_id):
         return 0
 
 
+# 指定のボスの現在の周に予約をしているメンバにお知らせする
+async def notice_reserving_member(data, guild, boss_id):
+    dic = generate_reservation_dict(data)
+
+    lap_no = data[DATA_BOSS_KEY][boss_id][BOSS_LAP_NO_KEY]
+
+    lap_key = str(lap_no)
+
+    if lap_key in dic:
+        res_list = dic[lap_key][boss_id]
+
+        id_set = set()
+
+        for res in res_list:
+            id_set.add(res[RESERVATION_ID_KEY])
+        
+        if len(id_set) > 0:
+            msg = ''
+
+            channel = guild.get_channel(data[DATA_SERVER_KEY][SERVER_COMMAND_CHANNEL_KEY])
+
+            for id in id_set:
+                u = await guild.fetch_member(id)
+
+                msg += f'{u.mention}'
+
+            msg += f'{lap_no}周目 {data[DATA_BOSS_KEY][boss_id][BOSS_NAME_KEY]}'
+
+            msg += messages.msg_notice_boss_change
+
+            await channel.send(msg)
+
+
+
 # DISCORDサーバ設定を読み込む
 def load_server_settings():
     fp = open(DATA_SERVER_PATH, 'r', encoding="utf-8")

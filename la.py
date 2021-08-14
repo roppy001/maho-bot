@@ -105,8 +105,7 @@ async def la(message, data, command_args, mention_ids):
                 new_reserve[common.RESERVATION_DAMAGE_KEY] = boss[boss_id][common.BOSS_HP_KEY]
                 new_reserve[common.RESERVATION_DATETIME_KEY] = now_str
 
-                # 持越予約は削除する
-                res[target_attack_index] = [new_reserve]
+                res[target_attack_index][0] = new_reserve
             
             # ステータスを変更
             atk[target_attack_index][common.DAILY_MEMBER_ATTACK_STATUS_KEY] = common.DAILY_ATTACK_STATUS_CARRY_OVER
@@ -230,6 +229,9 @@ async def la(message, data, command_args, mention_ids):
                     boss[i][common.BOSS_MAX_HP_KEY] = data[common.DATA_CONFIG_KEY][common.CONFIG_BOSS_KEY][i][common.BOSS_MAX_HP_KEY][phase]
                     boss[i][common.BOSS_HP_KEY] = boss[i][common.BOSS_MAX_HP_KEY]
 
+                    data[common.DATA_BOSS_KEY] = boss
+                    await common.notice_reserving_member(data, message.guild, i)
+
         # ステータスが討伐済みで、次の周が討伐可能な場合は次の周に移る
         data[common.DATA_BOSS_KEY] = boss
         max_lap_no = common.get_max_attack_lap_no(data)
@@ -242,6 +244,9 @@ async def la(message, data, command_args, mention_ids):
                 boss[i][common.BOSS_NAME_KEY] = data[common.DATA_CONFIG_KEY][common.CONFIG_BOSS_KEY][i][common.BOSS_NAME_KEY]
                 boss[i][common.BOSS_MAX_HP_KEY] = data[common.DATA_CONFIG_KEY][common.CONFIG_BOSS_KEY][i][common.BOSS_MAX_HP_KEY][phase]
                 boss[i][common.BOSS_HP_KEY] = boss[i][common.BOSS_MAX_HP_KEY]
+
+                data[common.DATA_BOSS_KEY] = boss
+                await common.notice_reserving_member(data, message.guild, i)
 
         data[common.DATA_BOSS_KEY] = boss
 
