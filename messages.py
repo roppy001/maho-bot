@@ -11,7 +11,6 @@ msg_reserve_success = 'として登録されたで'
 msg_fin_success = 'として完了登録されたで'
 msg_la_success = 'として討伐登録されたで'
 msg_ms_success = 'に変更したで'
-msg_shutdown_success = 'ほな、さいなら'
 
 # エラー文言
 error_lock = '他のコマンド処理を実行中どす　メッセージ続く場合はロックファイルを削除しとぉくれやす'

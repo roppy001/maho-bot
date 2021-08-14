@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+import asyncio
 
 import discord
 
@@ -22,6 +23,9 @@ LAP_CURRENT = -1
 LAP_NEXT = -2
 ATTACK_MAIN = -1
 ATTACK_CARRY_OVER = -2
+
+# メッセージ消去時間
+REPLY_DISPLAY_TIME = 60
 
 DATA_CONFIG_KEY = 'config'
 DATA_SERVER_KEY = 'server'
@@ -94,7 +98,9 @@ STATUS_LIST = ['000', '100', '110', '111', '112', '120', '121', '122', '200', '2
 
 async def reply_author(message, str):
     reply = f'{message.author.mention} {str}'
-    await message.channel.send(reply)
+    new_message = await message.channel.send(reply)
+
+    await new_message.delete(delay = REPLY_DISPLAY_TIME)
     return
 
 
