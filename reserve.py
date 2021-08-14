@@ -35,9 +35,6 @@ async def reserve(message, data, command_args, mention_ids):
 
         # ボスの現在の周を取得し、lap_noを置き換える
         current_lap_no = data[common.DATA_BOSS_KEY][boss_id][common.BOSS_LAP_NO_KEY]
-        # 討伐済みの場合は次の周の予約とする
-        if data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED:
-            current_lap_no += 1
 
         if lap_no == common.LAP_CURRENT:
             lap_no = current_lap_no
@@ -45,13 +42,13 @@ async def reserve(message, data, command_args, mention_ids):
             lap_no = current_lap_no + 1
 
         # 討伐済の周の予約は無効化する
-        if lap_no < current_lap_no or (lap_no == current_lap_no and data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED):
+        if lap_no != 0 and (lap_no < current_lap_no or (lap_no == current_lap_no and data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED)):
             raise common.CommandError(messages.error_reserve_defeated)
 
-        # 現在の周 + 1 + reservation_limitより大きい場合はエラー
+        # 現在の周 + reservation_limitより大きい場合はエラー
         min_lap = common.get_min_lap_no(data)
 
-        if lap_no > min_lap + 1 + data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY]:
+        if lap_no > min_lap + max(data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY], 1):
             raise common.CommandError(messages.error_reserve_limit_lap_no)
 
         now_str = datetime.datetime.now().isoformat()

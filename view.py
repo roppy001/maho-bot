@@ -14,7 +14,7 @@ async def display_reservation(data, message):
 
     boss = data[common.DATA_BOSS_KEY]
 
-    for l in range(min_lap, min_lap + 2 + data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY]):
+    for l in range(min_lap, min_lap + max(data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY], 1) + 1):
         if not str(l) in dic and l >= min_lap + 2:
             continue
 
@@ -66,7 +66,7 @@ async def get_reservation_str(data, message, dic, lap_no, boss_id):
         u = await message.guild.fetch_member(res[common.RESERVATION_ID_KEY])
 
         if u:
-            name = u.name
+            name = u.display_name
         else:
             name = messages.word_name_unknown
 
@@ -130,7 +130,7 @@ async def display_rest_detail(data, message):
         u = await message.guild.fetch_member(member_id)
 
         if u:
-            name = u.name
+            name = u.display_name
         else:
             name = messages.word_name_unknown
         msg += name + '  '
