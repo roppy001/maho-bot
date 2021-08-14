@@ -1,5 +1,5 @@
 {
-	"reservation_limit" : 2,
+	"reservation_limit" : 3,
 	"deputy_limited" : true,
 	"invalid_reservation_move_next" : true,
 	

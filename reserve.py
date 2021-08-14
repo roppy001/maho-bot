@@ -45,10 +45,10 @@ async def reserve(message, data, command_args, mention_ids):
         if lap_no != 0 and (lap_no < current_lap_no or (lap_no == current_lap_no and data[common.DATA_BOSS_KEY][boss_id][common.BOSS_STATUS_KEY] == common.BOSS_STATUS_DEFEATED)):
             raise common.CommandError(messages.error_reserve_defeated)
 
-        # 現在の周 + 1 + reservation_limitより大きい場合はエラー
+        # 現在の周 + reservation_limitより大きい場合はエラー
         min_lap = common.get_min_lap_no(data)
 
-        if lap_no > min_lap + 1 + data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY]:
+        if lap_no > min_lap + max(data[common.DATA_CONFIG_KEY][common.CONFIG_RESERVATION_LIMIT_KEY], 1):
             raise common.CommandError(messages.error_reserve_limit_lap_no)
 
         now_str = datetime.datetime.now().isoformat()
