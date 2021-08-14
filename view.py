@@ -4,7 +4,9 @@ import common
 import messages
 
 async def display_reservation(data, message):
-    edit_str = ''
+    summary = get_summary(data)
+
+    edit_str = f'**■ 凸状況 {summary[0]}/{summary[1]} 持越合計{summary[2]}**\n\n'
 
     min_lap = common.get_min_lap_no(data)
 
@@ -72,7 +74,78 @@ async def get_reservation_str(data, message, dic, lap_no, boss_id):
 
     return s
 
+def get_summary(data):
+    # 登録メンバのみを抽出
+    member_list = data[common.DATA_MEMBER_KEY]
+
+    atk_sum_max = len(member_list) * common.ATTACK_MAX
+    atk_sum = 0
+    carry_sum = 0
+
+    for m in member_list:
+        member_id = m[common.MEMBER_ID_KEY]
+        member_key = str(member_id)
+
+        daily_member = data[common.DATA_DAILY_KEY][common.DAILY_MEMBER_KEY]
+
+        if member_key in daily_member:
+            atk = daily_member[member_key][common.DAILY_MEMBER_ATTACK_KEY]
+
+            for i in range(0, len(atk)):
+                s = atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY]
+                if s == common.DAILY_ATTACK_STATUS_DONE:
+                    atk_sum += 1
+                elif s == common.DAILY_ATTACK_STATUS_CARRY_OVER:
+                    carry_sum += 1
+
+    return (atk_sum, atk_sum_max, carry_sum)
+
 async def display_rest_detail(data, message):
-    await message.edit(content = 'ざんとつ　編集')
+    summary = get_summary(data)
+
+    msg = f'**■ 凸状況 {summary[0]}/{summary[1]} 持越合計{summary[2]}**\n\n'
+
+    # 登録メンバのみを抽出
+    member_list = data[common.DATA_MEMBER_KEY]
+
+    for m in member_list:
+        member_id = m[common.MEMBER_ID_KEY]
+        member_key = str(member_id)
+
+        daily_member = data[common.DATA_DAILY_KEY][common.DAILY_MEMBER_KEY]
+
+        if member_key in daily_member:
+            atk = daily_member[member_key][common.DAILY_MEMBER_ATTACK_KEY]
+        else:
+            atk = []
+            for i in range(0, common.ATTACK_MAX):
+                f = {}
+                f[common.DAILY_MEMBER_ATTACK_STATUS_KEY] = common.DAILY_ATTACK_STATUS_NONE
+                f[common.DAILY_MEMBER_ATTACK_CARRY_OVER_KEY] = 0
+                atk.append(f)
+
+        for i in range(0, len(atk)):
+            msg += f'{messages.word_atk_status_mark[atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY]]} '
+
+        u = await message.guild.fetch_member(member_id)
+
+        if u:
+            name = u.name
+        else:
+            name = messages.word_name_unknown
+        msg += name + '  '
+
+        # 持越しを表示
+        for i in range(0, len(atk)):
+            if atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY] == common.DAILY_ATTACK_STATUS_CARRY_OVER:
+                c = atk[i][common.DAILY_MEMBER_ATTACK_CARRY_OVER_KEY]
+                if c == 0:
+                    msg += f'持越 '
+                else: 
+                    msg += f'{c}秒持越 '
+
+        msg += '\n'
+
+    await message.edit(content = msg)
 
     return

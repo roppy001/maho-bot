@@ -25,7 +25,7 @@ BOT_TOKEN=os.getenv('BOT_TOKEN')
 OK_HAND = '\N{OK HAND SIGN}'
 
 async def shutdown(message , data, command_args, mention_ids):
-    await common.reply_author(message, messages.msg_shutdown_success)
+    await message.add_reaction(OK_HAND)
     await client.logout()
     return (True,'')
 
@@ -42,10 +42,6 @@ COMMAND_LIST = [
     (['.shutdown'], shutdown, False),
     (['.kickbot'], manage.kickbot, False)
     ]
-
-# ボス周変更コマンド
-# modifyboss_cmd_list = ['.modifyboss']
-# cancelboss_cmd_list = ['.cancelboss']
 
 # 起動時に動作する処理
 @client.event

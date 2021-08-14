@@ -34,6 +34,9 @@ async def ms(message, data, command_args, mention_ids):
         # ステータス変更
         for i in range(0, len(status)):
             atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY] = status[i]
+            # ステータスが持越しの場合、秒数を0(不明)にリセット
+            if atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY] == common.DAILY_ATTACK_STATUS_CARRY_OVER:
+                atk[i][common.DAILY_MEMBER_ATTACK_CARRY_OVER_KEY] = 0
 
         member[common.DAILY_MEMBER_ATTACK_KEY] = atk 
         

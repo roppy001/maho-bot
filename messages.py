@@ -2,6 +2,7 @@
 word_atk_branch = ['本凸','持越']
 word_atk_index = '凸目'
 word_atk_status = ['未凸','持越','凸済']
+word_atk_status_mark = ['\N{LARGE BLUE CIRCLE}','\N{LARGE GREEN CIRCLE}','\N{LARGE ORANGE CIRCLE}']
 word_name_unknown = '(不明)'
 
 # お知らせ文言
