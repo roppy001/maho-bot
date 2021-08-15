@@ -52,6 +52,8 @@ error_la_defeated = '既に討伐されてます'
 error_la_full = 'これ以上凸できしまへん'
 error_la_impossible = '該当の持越し凸の登録はできしまへん'
 
+error_add_impossible = 'これ以上クラメンの追加はできしまへん'
+
 # 用例
 cmd_re_arg = '.re ボス番号[@周 or +] 予定ダメージ(万単位)[m[何凸目か]] [コメント]\n(例: .re 3+ 700m 討伐予定)'
 cmd_fin_arg = '.fin ボス番号 実績ダメージ(万単位)[m[何凸目か]]\n(例: .fin 2 700m1)'

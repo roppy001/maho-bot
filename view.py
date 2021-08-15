@@ -63,7 +63,10 @@ async def get_reservation_str(data, message, dic, lap_no, boss_id):
     res_list = dic[lap_key][boss_id]
 
     for res in res_list:
-        u = await message.guild.fetch_member(res[common.RESERVATION_ID_KEY])
+        try:
+            u = await message.guild.fetch_member(res[common.RESERVATION_ID_KEY])
+        except discord.NotFound:
+            u = None
 
         if u:
             name = u.display_name
@@ -127,7 +130,10 @@ async def display_rest_detail(data, message):
         for i in range(0, len(atk)):
             msg += f'{messages.word_atk_status_mark[atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY]]} '
 
-        u = await message.guild.fetch_member(member_id)
+        try:
+            u = await message.guild.fetch_member(member_id)
+        except discord.NotFound:
+            u = None
 
         if u:
             name = u.display_name
