@@ -317,7 +317,7 @@ def init_daily(data):
     new_daily[DAILY_MEMBER_KEY] = {}
     save_daily(new_daily)
 
-    data[DATA_BOSS_KEY] = new_daily
+    data[DATA_DAILY_KEY] = new_daily
 
     return
 

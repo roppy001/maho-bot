@@ -1,3 +1,5 @@
+import discord
+
 import messages
 import common
 
@@ -19,6 +21,9 @@ async def add(message, data, command_args, mention_ids):
                 e = dict()
                 e[common.MEMBER_ID_KEY] = m
                 members.append(e)
+
+        if len(members) > common.MEMBER_MAX:
+            raise common.CommandError(messages.error_add_impossible)
         
         common.save_members(members)
         data[common.DATA_MEMBER_KEY] = members
@@ -40,6 +45,12 @@ async def remove(message, data, command_args, mention_ids):
             for m in mention_ids:
                 if m == s[common.MEMBER_ID_KEY]:
                     flg = False
+
+            # 脱退済みメンバかどうかをチェック 脱退済みの場合自動削除する
+            try:
+                await message.guild.fetch_member(s[common.MEMBER_ID_KEY])
+            except discord.NotFound:
+                flg = False
 
             if flg:
                 new_members.append(s)
