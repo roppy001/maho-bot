@@ -68,6 +68,7 @@ RESERVATION_DAMAGE_KEY = 'damage'
 RESERVATION_COMMENT_KEY = 'comment'
 RESERVATION_DATETIME_KEY = 'datetime'
 RESERVATION_ID_KEY = 'id'
+RESERVATION_NAME_KEY = 'name'
 RESERVATION_SEQ_KEY = 'seq'
 RESERVATION_BRANCH_KEY = 'branch'
 
@@ -93,6 +94,7 @@ SERVER_REST_DETAIL_MESSAGE_KEY = 'rest_detail_message'
 SERVER_HELP_MESSAGE_KEY = 'help_message'
 
 MEMBER_ID_KEY = 'id'
+MEMBER_NAME_KEY = 'name'
 
 STATUS_LIST = ['000', '100', '110', '111', '112', '120', '121', '122', '200', '210', '211', '212', '220', '221', '222']
 
@@ -366,6 +368,7 @@ def generate_reservation_dict(data):
                         new_res[RESERVATION_ID_KEY] = member_id
                         new_res[RESERVATION_SEQ_KEY] = i
                         new_res[RESERVATION_BRANCH_KEY] = j
+                        new_res[RESERVATION_NAME_KEY] = m[MEMBER_NAME_KEY]
 
                         lap_no = new_res[RESERVATION_LAP_NO_KEY]
                         lap_key = str(lap_no)
@@ -421,9 +424,12 @@ async def notice_reserving_member(data, guild, boss_id):
             channel = guild.get_channel(data[DATA_SERVER_KEY][SERVER_COMMAND_CHANNEL_KEY])
 
             for id in id_set:
-                u = await guild.fetch_member(id)
-
-                msg += f'{u.mention}'
+                try:
+                    u = await guild.fetch_member(id)
+                    if u:
+                        msg += f'{u.mention}'
+                except discord.NotFound:
+                    pass
 
             msg += f'{lap_no}周目 {data[DATA_BOSS_KEY][boss_id][BOSS_NAME_KEY]}'
 

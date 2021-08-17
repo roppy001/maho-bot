@@ -63,17 +63,7 @@ async def get_reservation_str(data, message, dic, lap_no, boss_id):
     res_list = dic[lap_key][boss_id]
 
     for res in res_list:
-        try:
-            u = await message.guild.fetch_member(res[common.RESERVATION_ID_KEY])
-        except discord.NotFound:
-            u = None
-
-        if u:
-            name = u.display_name
-        else:
-            name = messages.word_name_unknown
-
-        s += f'　{res[common.RESERVATION_DAMAGE_KEY]}万 {name} {res[common.RESERVATION_COMMENT_KEY]} {res[common.RESERVATION_SEQ_KEY]+1}{messages.word_atk_index}{messages.word_atk_branch[res[common.RESERVATION_BRANCH_KEY]]}\n'
+        s += f'　{res[common.RESERVATION_DAMAGE_KEY]}万 { res[common.RESERVATION_NAME_KEY] } {res[common.RESERVATION_COMMENT_KEY]} {res[common.RESERVATION_SEQ_KEY]+1}{messages.word_atk_index}{messages.word_atk_branch[res[common.RESERVATION_BRANCH_KEY]]}\n'
 
     return s
 
@@ -130,16 +120,7 @@ async def display_rest_detail(data, message):
         for i in range(0, len(atk)):
             msg += f'{messages.word_atk_status_mark[atk[i][common.DAILY_MEMBER_ATTACK_STATUS_KEY]]} '
 
-        try:
-            u = await message.guild.fetch_member(member_id)
-        except discord.NotFound:
-            u = None
-
-        if u:
-            name = u.display_name
-        else:
-            name = messages.word_name_unknown
-        msg += name + '  '
+        msg += m[common.MEMBER_NAME_KEY] + '  '
 
         # 持越しを表示
         for i in range(0, len(atk)):
