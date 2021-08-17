@@ -13,6 +13,17 @@ async def add(message, data, command_args, mention_ids):
 
         for m in mention_ids:
             flg = True
+
+            # 名前を取得してキャッシュする
+            try:
+                u = await message.guild.fetch_member(m)
+                if u:
+                    name = u.display_name
+                else:
+                    flg = False
+            except discord.NotFound:
+                flg = False
+
             for s in members:
                 if m == s[common.MEMBER_ID_KEY]:
                     flg = False
@@ -20,6 +31,7 @@ async def add(message, data, command_args, mention_ids):
             if flg:
                 e = dict()
                 e[common.MEMBER_ID_KEY] = m
+                e[common.MEMBER_NAME_KEY] = name
                 members.append(e)
 
         if len(members) > common.MEMBER_MAX:
@@ -48,7 +60,9 @@ async def remove(message, data, command_args, mention_ids):
 
             # 脱退済みメンバかどうかをチェック 脱退済みの場合自動削除する
             try:
-                await message.guild.fetch_member(s[common.MEMBER_ID_KEY])
+                u = await message.guild.fetch_member(s[common.MEMBER_ID_KEY])
+                if u:
+                    s[common.MEMBER_NAME_KEY] = u.display_name
             except discord.NotFound:
                 flg = False
 
