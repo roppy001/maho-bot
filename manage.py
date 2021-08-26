@@ -117,10 +117,11 @@ async def mb(message, data, command_args, mention_ids):
             for i in range(0, len(res_list)):
                 for j in range(0, len(res_list[i])):
                     r = res_list[i][j]
-                    l = r[common.RESERVATION_LAP_NO_KEY]
-                    bi = r[common.RESERVATION_BOSS_ID_KEY]
-                    if boss_id == bi and ((l > 0 and l < lap_no) or (l == lap_no and boss_status == common.BOSS_STATUS_DEFEATED)):
-                        daily[common.DAILY_MEMBER_KEY][key][common.DAILY_MEMBER_RESERVATION_KEY][i][j][common.RESERVATION_LAP_NO_KEY] = 0
+                    if r[common.RESERVATION_STATUS_KEY] == common.RESERVE_STATUS_RESERVED:
+                        l = r[common.RESERVATION_LAP_NO_KEY]
+                        bi = r[common.RESERVATION_BOSS_ID_KEY]
+                        if boss_id == bi and ((l > 0 and l < lap_no) or (l == lap_no and boss_status == common.BOSS_STATUS_DEFEATED)):
+                            daily[common.DAILY_MEMBER_KEY][key][common.DAILY_MEMBER_RESERVATION_KEY][i][j][common.RESERVATION_LAP_NO_KEY] = 0
         
         common.save_boss(data[common.DATA_BOSS_KEY])
 
