@@ -127,7 +127,7 @@ async def command_main(message):
         command_str = message.content
 
     # メンションを文字列から削除したのち、空白でコマンドを分割
-    command_args = re.split('\s+', command_str.replace('　',' ').strip() )
+    command_args = re.split('\s+', command_str.replace('　',' ').strip(), 3)
 
     # コマンド部分は英字大文字を小文字に置き換える
     command_args[0] = str.lower(command_args[0])

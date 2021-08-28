@@ -1,7 +1,7 @@
 import os
 import json
 import datetime
-import asyncio
+import re
 
 import discord
 
@@ -159,6 +159,18 @@ def convert_carry_over(carry_over):
         return r
     except ValueError:
         raise CommandError(messages.error_carry_over)
+
+def check_comment(comment):
+    strs = re.split('\s+', comment.lower().replace('　',' ').strip())
+
+    if len(strs)>0 and strs[0] in ['m', 'm1', 'm2', 'm3']:
+        raise CommandError(messages.error_comment)
+    
+    if re.search('<.*>', comment) != None:
+        raise CommandError(messages.error_comment)
+
+    return
+
 
 def convert_boss_no_with_lap_no(str):
     try:

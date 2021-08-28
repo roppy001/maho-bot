@@ -29,6 +29,7 @@ async def reserve(message, data, command_args, mention_ids):
 
         if len(command_args) == 4:
             comment = command_args[3]
+            common.check_comment(comment)
 
         # クラメンとして登録済みかをチェック
         common.check_registered_member(data, target_id)
