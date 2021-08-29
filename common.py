@@ -172,6 +172,16 @@ def check_comment(comment):
     return
 
 
+def get_role(guild, str):
+    if re.search('^<@&\d+>$', str):
+        try:
+            return guild.get_role(int(str[3: len(str)-1]))
+        except:
+            raise CommandError(messages.error_role_invalid)
+    else:
+        raise CommandError(messages.error_role)
+
+
 def convert_boss_no_with_lap_no(str):
     try:
         if str.endswith('+'):

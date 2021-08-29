@@ -36,9 +36,10 @@ COMMAND_LIST = [
     (['.lastattack', '.la', '.討伐'], la.la, True),
     (['.cancel', '.cl', '.取消'], cancel.cancel, True),
     (['.modifystatus', '.ms', '.ステータス変更'], ms.ms, True),
+    (['.modifyboss', '.mb', '.ボス変更'], manage.mb, False),
     (['.add', '.追加'], manage.add, False),
     (['.remove', '.削除'], manage.remove, False),
-    (['.modifyboss', '.mb', '.ボス変更'], manage.mb, False),
+    (['.import', '.im', '.取込'], manage.im, False),
     (['.shutdown'], shutdown, False),
     (['.kickbot'], manage.kickbot, False)
     ]
