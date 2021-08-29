@@ -139,7 +139,7 @@ async def im(message, data, command_args, mention_ids):
         if len(command_args) != 2 :
             raise common.CommandError(messages.error_args)
 
-        target_role = common.get_role(message.guild, command_args[1])
+        target_role = await common.get_role(message.guild, command_args[1])
 
         members = []
 

@@ -172,10 +172,18 @@ def check_comment(comment):
     return
 
 
-def get_role(guild, str):
+async def get_role(guild, str):
     if re.search('^<@&\d+>$', str):
         try:
-            return guild.get_role(int(str[3: len(str)-1]))
+            tid = int(str[3: len(str)-1])
+
+            roles = await guild.fetch_roles()
+
+            for role in roles:
+                if role.id == tid:
+                    return role
+            
+            raise CommandError(messages.error_role_invalid)
         except:
             raise CommandError(messages.error_role_invalid)
     else:
