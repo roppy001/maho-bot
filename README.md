@@ -107,8 +107,10 @@ py -3 -m pip install -U discord
 
 discord Developer用サイトは以下
 https://discord.com/developers/applications
+Privileged Gateway Intents > SERVER MEMBERS INTENT を ONに設定する。
+Applicationを作成後、settings > botの画面でbuild a botを選ぶ
+TOKENの"COPY"をクリックする等してTOKENの内容を控えておく
 
-Applicationを作成後、settings > botの画面でbuild a botを選び、TOKENの内容をコピー控えておく
 settings > OAuth2 の OAuth2 URL Generatorを用いてURLを生成しておく
 SCOPESには"bot"、BOT PERMISSIONSには"Administrator"を選択し、URLを作成。この内容も控えておく
 
