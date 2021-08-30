@@ -61,6 +61,12 @@
 .remove ⇒ 自分が脱退
 .remove @あああ @いいい ⇒ あああといいいが脱退
 
+■クラメン一括追加コマンド
+.im ロール
+
+＜利用例＞
+.im @クランメンバー ⇒ 既存のメンバを破棄し、クランメンバーというロールに所属する全メンバを追加
+
 ■ボス状態変更コマンド
 .mb ボス番号 周 [HP]
 
@@ -101,8 +107,9 @@ py -3 -m pip install -U discord
 
 discord Developer用サイトは以下
 https://discord.com/developers/applications
-
-Applicationを作成後、settings > botの画面でbuild a botを選び、TOKENの内容をコピー控えておく
+Applicationを作成後、settings > botの画面でbuild a botを選ぶ
+TOKENの"COPY"をクリックする等してTOKENの内容を控えておく
+＜重要＞Privileged Gateway Intents > SERVER MEMBERS INTENT を ONに設定する。
 settings > OAuth2 の OAuth2 URL Generatorを用いてURLを生成しておく
 SCOPESには"bot"、BOT PERMISSIONSには"Administrator"を選択し、URLを作成。この内容も控えておく
 
@@ -252,16 +259,18 @@ windows 10／amazon linux 2018.3
 
 ## 管理用コマンド
 
-### クラメン追加／削除コマンド
+### クラメン追加／削除／一括追加コマンド
 #### コマンドの使い方
 ~~~
 .add (メンション)
 .remove (メンション)
+.im (ロール)
 ~~~
 
 #### コマンド打った時の動き
  * メンションしたメンバを追加・削除する。追加することで予約などの各種コマンドの対象になる。
  * メンションを省略した場合は自分が追加・削除される。
+ * ロールの取り込みの場合は、既存のメンバは削除したうえで取り込みを行う
 
 ### ボス周変更コマンド
 #### コマンドの使い方

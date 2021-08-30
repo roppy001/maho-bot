@@ -95,6 +95,7 @@ async def mb(message, data, command_args, mention_ids):
             raise common.CommandError(messages.error_lap_no)
 
         phase = common.get_phase(data, lap_no)
+        data[common.DATA_BOSS_KEY][boss_id][common.BOSS_NAME_KEY] = data[common.DATA_CONFIG_KEY][common.CONFIG_BOSS_KEY][boss_id][common.BOSS_NAME_KEY]
         data[common.DATA_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY] = data[common.DATA_CONFIG_KEY][common.CONFIG_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY][phase]
         if len(command_args) == 3:
             hp = data[common.DATA_BOSS_KEY][boss_id][common.BOSS_MAX_HP_KEY]
@@ -133,6 +134,49 @@ async def mb(message, data, command_args, mention_ids):
 
     return (True, '')
 
+async def im(message, data, command_args, mention_ids):
+    try : 
+        if len(command_args) != 2 :
+            raise common.CommandError(messages.error_args)
+
+        target_role = await common.get_role(message.guild, command_args[1])
+
+        members = []
+
+        for mem in target_role.members:
+            m = mem.id
+            flg = True
+
+            # 名前を取得してキャッシュする
+            try:
+                u = await message.guild.fetch_member(m)
+                if u:
+                    name = u.display_name
+                else:
+                    flg = False
+            except discord.NotFound:
+                flg = False
+
+            for s in members:
+                if m == s[common.MEMBER_ID_KEY]:
+                    flg = False
+        
+            if flg:
+                e = dict()
+                e[common.MEMBER_ID_KEY] = m
+                e[common.MEMBER_NAME_KEY] = name
+                members.append(e)
+
+        if len(members) > common.MEMBER_MAX:
+            raise common.CommandError(messages.error_add_impossible)
+
+        common.save_members(members)
+        data[common.DATA_MEMBER_KEY] = members
+
+    except common.CommandError as ce: 
+        raise common.CommandError(ce.args[0] + '\n' + messages.cmd_im_arg)
+
+    return (True, '')
 
 async def kickbot(message, data, command_args, mention_ids):
     if len(command_args) != 1:

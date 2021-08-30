@@ -172,6 +172,24 @@ def check_comment(comment):
     return
 
 
+async def get_role(guild, str):
+    if re.search('^<@&\d+>$', str):
+        try:
+            tid = int(str[3: len(str)-1])
+
+            roles = await guild.fetch_roles()
+
+            for role in roles:
+                if role.id == tid:
+                    return role
+            
+            raise CommandError(messages.error_role_invalid)
+        except:
+            raise CommandError(messages.error_role_invalid)
+    else:
+        raise CommandError(messages.error_role)
+
+
 def convert_boss_no_with_lap_no(str):
     try:
         if str.endswith('+'):
