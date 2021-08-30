@@ -18,7 +18,9 @@ import ms
 import manage
 import view
 
-client = discord.Client()
+its = discord.Intents.default()
+its.members = True
+client = discord.Client(intents=its)
 
 BOT_TOKEN=os.getenv('BOT_TOKEN')
 
